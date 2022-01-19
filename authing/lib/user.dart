@@ -3,6 +3,7 @@ class User {
   late String username;
   late String phone;
   late String email;
+  late String token;
 
   static User create(Map map) {
     User user = User();
@@ -10,6 +11,7 @@ class User {
     user.username = map["username"].toString();
     user.email = map["email"].toString();
     user.phone = map["phone"].toString();
+    user.token = map["token"].toString();
     return user;
   }
 }
