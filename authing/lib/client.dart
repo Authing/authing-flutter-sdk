@@ -101,8 +101,13 @@ class AuthClient {
     return AuthResult(result);
   }
 
-  static Future<AuthResult> sendSms(String phone) async {
-    final Result result = await post('/api/v2/sms/send', jsonEncode({'phone': phone}));
+  static Future<AuthResult> sendSms(String phone, [String? phoneCountryCode]) async {
+    Map map = {};
+    map.putIfAbsent('phone', () => phone);
+    if (phoneCountryCode != null) {
+      map.putIfAbsent('phoneCountryCode', () => phoneCountryCode);
+    }
+    final Result result = await post('/api/v2/sms/send', jsonEncode(map));
     return AuthResult(result);
   }
 
@@ -110,6 +115,52 @@ class AuthClient {
     var body = jsonEncode({'email': email, 'scene': scene});
     final Result result = await post('/api/v2/email/send', body);
     return AuthResult(result);
+  }
+
+  static Future<AuthResult> getCustomData(String userId) async {
+    final Result result = await get('/api/v2/udfs/values?targetType=USER&targetId=' + userId);
+    if (result.data["data"] is List) {
+      currentUser?.setCustomData(result.data["data"] as List);
+    }
+    return AuthResult(result);
+  }
+
+  static Future<AuthResult> setCustomData(List data) async {
+    List list = [];
+    for (var element in data) {
+      Map map = {};
+      map.putIfAbsent("definition", () => element["key"]);
+      map.putIfAbsent("value", () => element["value"]);
+      list.add(map);
+    }
+    var body = jsonEncode({'udfs': list});
+    final Result result = await post('/api/v2/udfs/values', body);
+    if (result.data["data"] is List) {
+      currentUser?.setCustomData(result.data["data"] as List);
+    }
+    return AuthResult(result);
+  }
+
+  static Future<AuthResult> resetPasswordByPhoneCode(String phone, String code, String password) async {
+    var body = jsonEncode({'phone': phone, 'code': code, 'newPassword': Util.encrypt(password)});
+    final Result result = await post('/api/v2/password/reset/sms', body);
+    return AuthResult(result);
+  }
+
+  static Future<AuthResult> resetPasswordByEmailCode(String email, String code, String password) async {
+    var body = jsonEncode({'email': email, 'code': code, 'newPassword': Util.encrypt(password)});
+    final Result result = await post('/api/v2/password/reset/email', body);
+    return AuthResult(result);
+  }
+
+  static Future<AuthResult> updateProfile(Map map) async {
+    var body = jsonEncode(map);
+    final Result result = await post('/api/v2/users/profile/update', body);
+    AuthResult authResult = AuthResult(result);
+    if (result.code == 200) {
+      authResult.user = createUser(result);
+    }
+    return authResult;
   }
 
   static User createUser(Result result) {
@@ -150,7 +201,11 @@ class AuthClient {
         result.message = parsed["message"] as String;
       }
       if (parsed.containsKey("data")) {
-        result.data = parsed["data"];
+        if (parsed["data"] is Map) {
+          result.data = parsed["data"];
+        } else {
+          result.data = parsed;
+        }
       } else {
         result.data = parsed;
       }
