@@ -71,4 +71,86 @@ void main() {
     expect(result2.code, 200);
     expect(result2.user.email, email);
   });
+
+  test('bindPhone', () async {
+    AuthResult result = await AuthClient.loginByAccount("ci", "111111");
+    expect(result.code, 200);
+    expect(result.user.username, "ci");
+
+    String phone = "136";
+    AuthResult result2 = await AuthClient.bindPhone(phone, "6499");
+    expect(result2.code, 200);
+
+    AuthResult result3 = await AuthClient.loginByAccount(phone, "111111");
+    expect(result3.code, 200);
+    expect(result3.user.phone, phone);
+  });
+
+  test('unbindPhone', () async {
+    AuthResult result = await AuthClient.loginByAccount("cinophone", "111111");
+    expect(result.code, 200);
+
+    AuthResult result2 = await AuthClient.unbindPhone();
+    expect(result2.code, 1320005);
+
+    AuthResult result3 = await AuthClient.loginByAccount("ci", "111111");
+    expect(result3.code, 200);
+
+    AuthResult result4 = await AuthClient.unbindPhone();
+    expect(result4.code, 200);
+  });
+
+  test('updatePhone', () async {
+    AuthResult result = await AuthClient.loginByAccount("ci", "111111");
+    expect(result.code, 200);
+
+    String phone = "13632530515";
+    AuthResult result2 = await AuthClient.updatePhone(phone, "5564");
+    expect(result2.code, 200);
+
+    AuthResult result3 = await AuthClient.loginByAccount(phone, "111111");
+    expect(result3.code, 200);
+    expect(result3.user.phone, phone);
+  });
+
+  test('bindEmail', () async {
+    AuthResult result = await AuthClient.loginByAccount("ci", "111111");
+    expect(result.code, 200);
+    expect(result.user.username, "ci");
+
+    String email = "maolongdong@gmail.com";
+    AuthResult result2 = await AuthClient.bindEmail(email, "3687");
+    expect(result2.code, 200);
+
+    AuthResult result3 = await AuthClient.loginByAccount(email, "111111");
+    expect(result3.code, 200);
+    expect(result3.user.email, email);
+  });
+
+  test('unbindEmail', () async {
+    AuthResult result = await AuthClient.loginByAccount("cinophone", "111111");
+    expect(result.code, 200);
+
+    AuthResult result2 = await AuthClient.unbindEmail();
+    expect(result2.code, 1320009);
+
+    AuthResult result3 = await AuthClient.loginByAccount("ci", "111111");
+    expect(result3.code, 200);
+
+    AuthResult result4 = await AuthClient.unbindEmail();
+    expect(result4.code, 200);
+  });
+
+  test('updateEmail', () async {
+    AuthResult result = await AuthClient.loginByAccount("ci", "111111");
+    expect(result.code, 200);
+
+    String email = "maolongdong@gmail.com";
+    AuthResult result2 = await AuthClient.updateEmail(email, "9691");
+    expect(result2.code, 200);
+
+    AuthResult result3 = await AuthClient.loginByAccount(email, "111111");
+    expect(result3.code, 200);
+    expect(result3.user.email, email);
+  });
 }

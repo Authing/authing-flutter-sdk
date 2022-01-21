@@ -18,7 +18,7 @@ class Authing {
     http.get(Uri.parse(
         "https://developer-beta.authing.cn/stats/sdk-trace/?appid=" +
             appId +
-            "&sdk=flutters&version=" +
+            "&sdk=flutter&version=" +
             VERSION +
             "&ip=flutter"));
   }

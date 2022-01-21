@@ -163,6 +163,146 @@ class AuthClient {
     return authResult;
   }
 
+  static Future<AuthResult> updatePassword(String newPassword, [String? oldPassword]) async {
+    Map map = {};
+    map.putIfAbsent('newPassword', () => Util.encrypt(newPassword));
+    if (oldPassword != null) {
+      map.putIfAbsent('oldPassword', () => Util.encrypt(oldPassword));
+    }
+    final Result result = await post('/api/v2/password/update', jsonEncode(map));
+    AuthResult authResult = AuthResult(result);
+    if (result.code == 200) {
+      authResult.user = createUser(result);
+    }
+    return authResult;
+  }
+
+  static Future<AuthResult> bindPhone(
+      String phone, String code) async {
+    var body = jsonEncode({'phone': phone, 'phoneCode': code});
+    final Result result = await post('/api/v2/users/phone/bind', body);
+    AuthResult authResult = AuthResult(result);
+    if (result.code == 200) {
+      authResult.user = createUser(result);
+    }
+    return authResult;
+  }
+
+  static Future<AuthResult> unbindPhone() async {
+    final Result result = await post('/api/v2/users/phone/unbind');
+    AuthResult authResult = AuthResult(result);
+    if (result.code == 200) {
+      authResult.user = createUser(result);
+    }
+    return authResult;
+  }
+
+  // 2230 same phone number
+  // 1320004 phone already bind
+  static Future<AuthResult> updatePhone(String phone, String phoneCode,
+      [String? oldPhone, String? oldPhoneCode, String? phoneCountryCode, String? oldPhoneCountryCode]) async {
+    Map map = {};
+    map.putIfAbsent('phone', () => phone);
+    map.putIfAbsent('phoneCode', () => phoneCode);
+    if (oldPhone != null && oldPhoneCode != null) {
+      map.putIfAbsent('oldPhone', () => oldPhone);
+      map.putIfAbsent('oldPhoneCode', () => oldPhoneCode);
+    }
+    if (phoneCountryCode != null) {
+      map.putIfAbsent('phoneCountryCode', () => phoneCountryCode);
+    }
+    if (oldPhoneCountryCode != null) {
+      map.putIfAbsent('oldPhoneCountryCode', () => oldPhoneCountryCode);
+    }
+    final Result result = await post('/api/v2/users/phone/update', jsonEncode(map));
+    AuthResult authResult = AuthResult(result);
+    if (result.code == 200) {
+      authResult.user = createUser(result);
+    }
+    return authResult;
+  }
+
+  static Future<AuthResult> bindEmail(
+      String email, String code) async {
+    var body = jsonEncode({'email': email, 'emailCode': code});
+    final Result result = await post('/api/v2/users/email/bind', body);
+    AuthResult authResult = AuthResult(result);
+    if (result.code == 200) {
+      authResult.user = createUser(result);
+    }
+    return authResult;
+  }
+
+  // 1320009 no email
+  // 1320010 no other login method
+  static Future<AuthResult> unbindEmail() async {
+    final Result result = await post('/api/v2/users/email/unbind');
+    AuthResult authResult = AuthResult(result);
+    if (result.code == 200) {
+      authResult.user = createUser(result);
+    }
+    return authResult;
+  }
+
+  static Future<AuthResult> updateEmail(String email, String emailCode,
+      [String? oldEmail, String? oldEmailCode]) async {
+    Map map = {};
+    map.putIfAbsent('email', () => email);
+    map.putIfAbsent('emailCode', () => emailCode);
+    if (oldEmail != null && oldEmailCode != null) {
+      map.putIfAbsent('oldEmail', () => oldEmail);
+      map.putIfAbsent('oldEmailCode', () => oldEmailCode);
+    }
+    final Result result = await post('/api/v2/users/email/update', jsonEncode(map));
+    AuthResult authResult = AuthResult(result);
+    if (result.code == 200) {
+      authResult.user = createUser(result);
+    }
+    return authResult;
+  }
+
+  static Future<AuthResult> link(String primaryUserToken, String secondaryUserToken) async {
+    var body = jsonEncode({'primaryUserToken': primaryUserToken, 'secondaryUserToken': secondaryUserToken});
+    final Result result = await post('/api/v2/users/link', jsonEncode(body));
+    AuthResult authResult = AuthResult(result);
+    if (result.code == 200) {
+      authResult.user = createUser(result);
+    }
+    return authResult;
+  }
+
+  static Future<AuthResult> unlink(String provider) async {
+    Map map = {};
+    map.putIfAbsent('provider', () => provider);
+    if (currentUser != null) {
+      map.putIfAbsent('primaryUserToken', () => currentUser!.token);
+    }
+    final Result result = await post('/api/v2/users/unlink', jsonEncode(map));
+    AuthResult authResult = AuthResult(result);
+    if (result.code == 200) {
+      authResult.user = createUser(result);
+    }
+    return authResult;
+  }
+
+  static Future<Result> getSecurityLevel() async {
+    return await get('/api/v2/users/me/security-level');
+  }
+
+  static Future<Map> listAuthorizedResources(String namespace, [String? resourceType]) async {
+    Map map = {};
+    map.putIfAbsent('namespace', () => namespace);
+    if (resourceType != null) {
+      map.putIfAbsent('resourceType', () => resourceType);
+    }
+    final Result result = await post('/api/v2/users/resource/authorized', jsonEncode(map));
+    return result.data;
+  }
+
+  static Future<Result> listApplications([int? page = 1, int? limit = 10]) async {
+    return await get('/api/v2/users/me/applications/allowed?page=' + page.toString() + "&limit=" + limit.toString());
+  }
+
   static User createUser(Result result) {
     currentUser = User.create(result.data);
     return currentUser!;
@@ -172,12 +312,12 @@ class AuthClient {
     return request("get", endpoint, null);
   }
 
-  static Future<Result> post(String endpoint, String body) {
+  static Future<Result> post(String endpoint, [String? body]) {
     return request("post", endpoint, body);
   }
 
   static Future<Result> request(
-      String method, String endpoint, String? body) async {
+      String method, String endpoint, [String? body]) async {
     var url = Uri.parse('https://' + Authing.sHost + endpoint);
     Map<String, String> headers = {
       "x-authing-userpool-id": Authing.sUserPoolId,

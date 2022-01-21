@@ -124,4 +124,74 @@ void main() {
     expect(result3.code, 200);
     expect(result3.user.username, "ci");
   });
+
+  test('updatePassword', () async {
+    AuthResult result = await AuthClient.loginByAccount("ci", "111111");
+    expect(result.code, 200);
+    expect(result.user.username, "ci");
+
+    AuthResult result1 = await AuthClient.updatePassword("222222", "123456");
+    expect(result1.code, 1320011);
+
+    AuthResult result2 = await AuthClient.updatePassword("222222", "111111");
+    expect(result2.code, 200);
+
+    AuthResult result3 = await AuthClient.loginByAccount("ci", "222222");
+    expect(result3.code, 200);
+
+    AuthResult result4 = await AuthClient.updatePassword("111111", "222222");
+    expect(result4.code, 200);
+  });
+
+  test('getSecurityLevel', () async {
+    AuthResult result = await AuthClient.loginByAccount("ci", "111111");
+    expect(result.code, 200);
+    expect(result.user.username, "ci");
+
+    Result result1 = await AuthClient.getSecurityLevel();
+    expect(result1.code, 200);
+    expect(result1.data["score"], 75);
+    expect(result1.data["passwordSecurityLevel"], 1);
+  });
+
+  test('listAuthorizedResources', () async {
+    AuthResult result = await AuthClient.loginByAccount("ci", "111111");
+    expect(result.code, 200);
+    expect(result.user.username, "ci");
+
+    Map result1 = await AuthClient.listAuthorizedResources("default");
+    expect(result1["totalCount"], 2);
+    expect(result1["list"][0]["code"], "ci:*");
+    expect(result1["list"][0]["type"], "DATA");
+    expect(result1["list"][1]["code"], "super:*");
+    expect(result1["list"][1]["type"], "API");
+
+    result1 = await AuthClient.listAuthorizedResources("default", "DATA");
+    expect(result1["totalCount"], 1);
+    expect(result1["list"][0]["code"], "ci:*");
+    expect(result1["list"][0]["type"], "DATA");
+
+    AuthResult result2 = await AuthClient.loginByAccount("cinophone", "111111");
+    expect(result2.code, 200);
+
+    Map result3 = await AuthClient.listAuthorizedResources("default");
+    expect(result3["totalCount"], 0);
+  });
+
+  test('listApplications', () async {
+    AuthResult result = await AuthClient.loginByAccount("ci", "111111");
+    expect(result.code, 200);
+    expect(result.user.username, "ci");
+
+    Result result1 = await AuthClient.listApplications();
+    expect(result1.code, 200);
+    expect(result1.data["totalCount"], 5);
+    expect(result1.data["list"][0]["id"], "61ae0c9807451d6f30226bd4");
+
+    AuthResult result2 = await AuthClient.loginByAccount("cinophone", "111111");
+    expect(result2.code, 200);
+
+    Result result3 = await AuthClient.listApplications();
+    expect(result3.data["totalCount"], 1);
+  });
 }

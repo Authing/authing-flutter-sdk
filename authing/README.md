@@ -262,3 +262,33 @@ var code = result.code;
 **error**
 
 * 500 phone number is mal-formatted
+
+<br>
+
+## Update password
+
+Update user password. Must log in first. In case user didn't set a password (e.g. registered by phone code or social connections), the old password parameter should be omitted.
+
+```dart
+AuthClient.updatePassword(String newPassword, [String? oldPassword]);
+```
+
+**params**
+
+* *newPassword* new password in clear text
+
+* *oldPassword* old password in clear text. Optional
+
+**example**
+
+```dart
+AuthResult result = await AuthClient.updatePassword("newPassword", "oldPassword");
+var code = result.code;
+```
+
+**error**
+
+* 2020 must login first
+* 1320011 old password is incorrect
+
+<br>
