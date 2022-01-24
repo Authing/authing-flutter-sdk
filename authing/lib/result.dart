@@ -9,7 +9,7 @@ class Result {
 class AuthResult {
   late int code;
   late String message;
-  late User user;
+  User? user;
 
   AuthResult(Result result) {
     code = result.code;

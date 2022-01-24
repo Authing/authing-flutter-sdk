@@ -15,11 +15,11 @@ void main() {
     String phone = "+86xxx";
     AuthResult result = await AuthClient.registerByPhoneCode(phone, "9314", "111111");
     expect(result.code, 200);
-    expect(result.user.phone, phone);
+    expect(result.user?.phone, phone);
 
     AuthResult result2 = await AuthClient.loginByAccount(phone, "111111");
     expect(result2.code, 200);
-    expect(result2.user.phone, phone);
+    expect(result2.user?.phone, phone);
   });
 
   test('login by phone code', () async {
@@ -28,7 +28,7 @@ void main() {
     String phone = "+86xxx";
     AuthResult result = await AuthClient.loginByPhoneCode(phone, "9130");
     expect(result.code, 200);
-    expect(result.user.phone, phone);
+    expect(result.user?.phone, phone);
 
     AuthResult result2 = await AuthClient.loginByPhoneCode(phone, "111111");
     expect(result2.code, 2001);
@@ -59,7 +59,7 @@ void main() {
 
     AuthResult result2 = await AuthClient.loginByAccount(phone, "111111");
     expect(result2.code, 200);
-    expect(result2.user.phone, phone);
+    expect(result2.user?.phone, phone);
   });
 
   test('resetPasswordByEmailCode', () async {
@@ -69,13 +69,13 @@ void main() {
 
     AuthResult result2 = await AuthClient.loginByAccount(email, "111111");
     expect(result2.code, 200);
-    expect(result2.user.email, email);
+    expect(result2.user?.email, email);
   });
 
   test('bindPhone', () async {
     AuthResult result = await AuthClient.loginByAccount("ci", "111111");
     expect(result.code, 200);
-    expect(result.user.username, "ci");
+    expect(result.user?.username, "ci");
 
     String phone = "136";
     AuthResult result2 = await AuthClient.bindPhone(phone, "6499");
@@ -83,7 +83,7 @@ void main() {
 
     AuthResult result3 = await AuthClient.loginByAccount(phone, "111111");
     expect(result3.code, 200);
-    expect(result3.user.phone, phone);
+    expect(result3.user?.phone, phone);
   });
 
   test('unbindPhone', () async {
@@ -110,13 +110,13 @@ void main() {
 
     AuthResult result3 = await AuthClient.loginByAccount(phone, "111111");
     expect(result3.code, 200);
-    expect(result3.user.phone, phone);
+    expect(result3.user?.phone, phone);
   });
 
   test('bindEmail', () async {
     AuthResult result = await AuthClient.loginByAccount("ci", "111111");
     expect(result.code, 200);
-    expect(result.user.username, "ci");
+    expect(result.user?.username, "ci");
 
     String email = "maolongdong@gmail.com";
     AuthResult result2 = await AuthClient.bindEmail(email, "3687");
@@ -124,7 +124,7 @@ void main() {
 
     AuthResult result3 = await AuthClient.loginByAccount(email, "111111");
     expect(result3.code, 200);
-    expect(result3.user.email, email);
+    expect(result3.user?.email, email);
   });
 
   test('unbindEmail', () async {
@@ -151,6 +151,27 @@ void main() {
 
     AuthResult result3 = await AuthClient.loginByAccount(email, "111111");
     expect(result3.code, 200);
-    expect(result3.user.email, email);
+    expect(result3.user?.email, email);
+  });
+
+  test('loginByWechat', () async {
+    AuthResult result = await AuthClient.loginByWechat("61d7bba378b4119bcb12590f", "x");
+    expect(result.code, 200);
+  });
+
+  test('loginByAlipay', () async {
+    AuthResult result = await AuthClient.loginByAlipay("6184f4de0b6ae7d51ec98d5f", "x");
+    expect(result.code, 200);
+  });
+
+  test('loginByApple', () async {
+    AuthResult result = await AuthClient.loginByApple("x");
+    expect(result.code, 200);
+  });
+
+  test('mfaVerifyByPhone', () async {
+    Authing.init(pool, "61c173ada0e3aec651b1a1d1");
+    AuthResult result = await AuthClient.mfaVerifyByPhone("136", "1234");
+    expect(result.code, 200);
   });
 }

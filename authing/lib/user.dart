@@ -3,6 +3,8 @@ class User {
   late String phone;
   late String email;
   late String token;
+  String? mfaToken;
+  String? firstTimeLoginToken;
 
   late String username;
   late String nickname;
@@ -38,6 +40,9 @@ class User {
     user.phone = map["phone"].toString();
     user.email = map["email"].toString();
     user.token = map["token"].toString();
+    if (map.containsKey("mfaToken")) {
+      user.mfaToken = map["mfaToken"].toString();
+    }
 
     user.username = map["username"].toString();
     user.nickname = map["nickname"].toString();

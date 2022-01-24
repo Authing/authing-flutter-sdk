@@ -14,11 +14,11 @@ void main() {
   test('register by email', () async {
     AuthResult result = await AuthClient.registerByEmail("1@1.com", "111111");
     expect(result.code, 200);
-    expect(result.user.email, "1@1.com");
+    expect(result.user?.email, "1@1.com");
 
     AuthResult result2 = await AuthClient.loginByAccount("1@1.com", "111111");
     expect(result2.code, 200);
-    expect(result2.user.email, "1@1.com");
+    expect(result2.user?.email, "1@1.com");
 
     AuthResult result3 = await AuthClient.registerByEmail("1@1.com", "111111");
     expect(result3.code, 2026);
@@ -30,11 +30,11 @@ void main() {
   test('register by username', () async {
     AuthResult result = await AuthClient.registerByUserName("test1024", "111111");
     expect(result.code, 200);
-    expect(result.user.username, "test1024");
+    expect(result.user?.username, "test1024");
 
     AuthResult result2 = await AuthClient.loginByAccount("test1024", "111111");
     expect(result2.code, 200);
-    expect(result2.user.username, "test1024");
+    expect(result2.user?.username, "test1024");
 
     AuthResult result3 = await AuthClient.registerByUserName("test1024", "111111");
     expect(result3.code, 2026);
@@ -43,7 +43,7 @@ void main() {
   test('login by account', () async {
     AuthResult result = await AuthClient.loginByAccount("ci", "111111");
     expect(result.code, 200);
-    expect(result.user.username, "ci");
+    expect(result.user?.username, "ci");
 
     AuthResult result2 = await AuthClient.loginByAccount("ci", "111111xx");
     expect(result2.code, 2333);
@@ -57,17 +57,17 @@ void main() {
 
     AuthResult result = await AuthClient.loginByAccount("ci", "111111");
     expect(result.code, 200);
-    expect(result.user.username, "ci");
+    expect(result.user?.username, "ci");
 
     AuthResult result2 = await AuthClient.getCurrentUser();
     expect(result2.code, 200);
-    expect(result2.user.username, "ci");
+    expect(result2.user?.username, "ci");
   });
 
   test('logout', () async {
     AuthResult result = await AuthClient.loginByAccount("ci", "111111");
     expect(result.code, 200);
-    expect(result.user.username, "ci");
+    expect(result.user?.username, "ci");
 
     AuthResult result2 = await AuthClient.logout();
     expect(result2.code, 200);
@@ -80,9 +80,9 @@ void main() {
   test('getCustomData', () async {
     AuthResult result = await AuthClient.loginByAccount("ci", "111111");
     expect(result.code, 200);
-    expect(result.user.username, "ci");
+    expect(result.user?.username, "ci");
 
-    AuthResult result2 = await AuthClient.getCustomData(result.user.id);
+    AuthResult result2 = await AuthClient.getCustomData(result.user!.id);
     expect(result2.code, 200);
     expect(AuthClient.currentUser?.customData[0]["key"], "org");
     expect(AuthClient.currentUser?.customData[0]["value"], "unit_test");
@@ -91,9 +91,9 @@ void main() {
   test('setCustomData', () async {
     AuthResult result = await AuthClient.loginByAccount("ci", "111111");
     expect(result.code, 200);
-    expect(result.user.username, "ci");
+    expect(result.user?.username, "ci");
 
-    AuthResult result2 = await AuthClient.getCustomData(result.user.id);
+    AuthResult result2 = await AuthClient.getCustomData(result.user!.id);
     expect(result2.code, 200);
     expect(AuthClient.currentUser?.customData[0]["key"], "org");
     expect(AuthClient.currentUser?.customData[0]["value"], "unit_test");
@@ -110,25 +110,25 @@ void main() {
   test('updateProfile', () async {
     AuthResult result = await AuthClient.loginByAccount("ci", "111111");
     expect(result.code, 200);
-    expect(result.user.username, "ci");
+    expect(result.user?.username, "ci");
 
     AuthResult result2 = await AuthClient.updateProfile({
       "username":"hey",
       "nickname":"musk"
     });
     expect(result2.code, 200);
-    expect(result2.user.username, "hey");
-    expect(result2.user.nickname, "musk");
+    expect(result2.user?.username, "hey");
+    expect(result2.user?.nickname, "musk");
 
     AuthResult result3 = await AuthClient.updateProfile({"username":"ci"});
     expect(result3.code, 200);
-    expect(result3.user.username, "ci");
+    expect(result3.user?.username, "ci");
   });
 
   test('updatePassword', () async {
     AuthResult result = await AuthClient.loginByAccount("ci", "111111");
     expect(result.code, 200);
-    expect(result.user.username, "ci");
+    expect(result.user?.username, "ci");
 
     AuthResult result1 = await AuthClient.updatePassword("222222", "123456");
     expect(result1.code, 1320011);
@@ -146,7 +146,7 @@ void main() {
   test('getSecurityLevel', () async {
     AuthResult result = await AuthClient.loginByAccount("ci", "111111");
     expect(result.code, 200);
-    expect(result.user.username, "ci");
+    expect(result.user?.username, "ci");
 
     Result result1 = await AuthClient.getSecurityLevel();
     expect(result1.code, 200);
@@ -154,10 +154,38 @@ void main() {
     expect(result1.data["passwordSecurityLevel"], 1);
   });
 
+  test('getSecurityLevel', () async {
+    AuthResult result = await AuthClient.loginByAccount("ci", "111111");
+    expect(result.code, 200);
+    expect(result.user?.username, "ci");
+
+    Result result1 = await AuthClient.getSecurityLevel();
+    expect(result1.code, 200);
+    expect(result1.data["score"], 75);
+    expect(result1.data["passwordSecurityLevel"], 1);
+  });
+
+  test('listRoles', () async {
+    AuthResult result = await AuthClient.loginByAccount("ci", "111111");
+    expect(result.code, 200);
+    expect(result.user?.username, "ci");
+
+    Result result1 = await AuthClient.listRoles();
+    List list = result1.data["data"];
+    expect(list.length, 2);
+    expect(list[0]["code"], "admin");
+    expect(list[1]["code"], "manager");
+
+    result1 = await AuthClient.listRoles("60caaf414f9323f25f64b2f4");
+    list = result1.data["data"];
+    expect(list.length, 1);
+    expect(list[0]["code"], "admin");
+  });
+
   test('listAuthorizedResources', () async {
     AuthResult result = await AuthClient.loginByAccount("ci", "111111");
     expect(result.code, 200);
-    expect(result.user.username, "ci");
+    expect(result.user?.username, "ci");
 
     Map result1 = await AuthClient.listAuthorizedResources("default");
     expect(result1["totalCount"], 2);
@@ -178,20 +206,42 @@ void main() {
     expect(result3["totalCount"], 0);
   });
 
-  test('listApplications', () async {
-    AuthResult result = await AuthClient.loginByAccount("ci", "111111");
-    expect(result.code, 200);
-    expect(result.user.username, "ci");
+  test('computedPasswordSecurityLevel', () async {
+    int r = AuthClient.computedPasswordSecurityLevel("123");
+    expect(r, 0);
 
-    Result result1 = await AuthClient.listApplications();
+    r = AuthClient.computedPasswordSecurityLevel("1234Abcd");
+    expect(r, 1);
+
+    r = AuthClient.computedPasswordSecurityLevel("1234@Abcd");
+    expect(r, 2);
+  });
+
+  test('listOrgs', () async {
+    AuthResult result1 = await AuthClient.loginByAccount("ci", "111111");
     expect(result1.code, 200);
-    expect(result1.data["totalCount"], 5);
-    expect(result1.data["list"][0]["id"], "61ae0c9807451d6f30226bd4");
+    expect(result1.user?.username, "ci");
 
-    AuthResult result2 = await AuthClient.loginByAccount("cinophone", "111111");
-    expect(result2.code, 200);
+    Result result = await AuthClient.listOrgs();
+    expect(result.code, 200);
+    List list = result.data["data"];
+    expect(list.length, 2);
+    expect(list[0][3]["name"], "JavaDevHR");
+  });
 
-    Result result3 = await AuthClient.listApplications();
-    expect(result3.data["totalCount"], 1);
+  test('mfaCheck', () async {
+    Authing.init(pool, "61c173ada0e3aec651b1a1d1");
+
+    AuthResult result1 = await AuthClient.loginByAccount("ci", "111111");
+    expect(result1.code, 1636);
+
+    bool r = await AuthClient.mfaCheck("13012345678", null);
+    expect(r, true);
+
+    r = await AuthClient.mfaCheck("abc@gmail.com", null);
+    expect(r, true);
+
+    r = await AuthClient.mfaCheck(null, "maolongdong@gmail.com");
+    expect(r, false);
   });
 }

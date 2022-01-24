@@ -1,5 +1,5 @@
 name: authing_sdk
-description: Authing SDK for Flutter
+description: Authing SDK for Flutter. It provides basic authentication APIs, user profile APIs, social connection APIs, Multi-factor Authentication APIs
 version: 0.0.1
 homepage: https://authing.cn
 repository: https://github.com/Authing/sdk-flutter
