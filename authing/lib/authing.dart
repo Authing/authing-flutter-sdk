@@ -3,7 +3,7 @@ library authing;
 import 'package:http/http.dart' as http;
 
 class Authing {
-  static const String VERSION = "0.0.1";
+  static const String VERSION = "1.0.0";
 
   static String sUserPoolId = "";
   static String sAppId = "";

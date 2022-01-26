@@ -287,7 +287,7 @@ class AuthClient {
   }
 
   // 0 low; 1 medium; 2 high
-  static int computedPasswordSecurityLevel(String password) {
+  static int computePasswordSecurityLevel(String password) {
     if (password.length < 6) {
       return 0;
     }
@@ -340,7 +340,6 @@ class AuthClient {
         limit.toString());
   }
 
-  // TODO admin required
   static Future<Result> listOrgs() async {
     if (currentUser != null) {
       return await get('/api/v2/users/' + currentUser!.id + "/orgs");
@@ -428,7 +427,7 @@ class AuthClient {
     return authResult;
   }
 
-  static Future<AuthResult> mfaVerifyByOTP(String code) async {
+  static Future<AuthResult> mfaVerifyByTOTP(String code) async {
     var body = jsonEncode({'authenticatorType': 'totp', 'totp': code});
     final Result result =
         await post('/api/v2/applications/mfa/totp/verify', jsonEncode(body));

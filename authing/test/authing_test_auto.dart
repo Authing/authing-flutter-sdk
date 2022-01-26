@@ -82,7 +82,7 @@ void main() {
     expect(result.code, 200);
     expect(result.user?.username, "ci");
 
-    AuthResult result2 = await AuthClient.getCustomData(result.user!.id);
+    AuthResult result2 = await AuthClient.getCustomData(AuthClient.currentUser!.id);
     expect(result2.code, 200);
     expect(AuthClient.currentUser?.customData[0]["key"], "org");
     expect(AuthClient.currentUser?.customData[0]["value"], "unit_test");
@@ -154,15 +154,14 @@ void main() {
     expect(result1.data["passwordSecurityLevel"], 1);
   });
 
-  test('getSecurityLevel', () async {
+  test('listApplications', () async {
     AuthResult result = await AuthClient.loginByAccount("ci", "111111");
     expect(result.code, 200);
     expect(result.user?.username, "ci");
 
-    Result result1 = await AuthClient.getSecurityLevel();
+    Result result1 = await AuthClient.listApplications();
     expect(result1.code, 200);
-    expect(result1.data["score"], 75);
-    expect(result1.data["passwordSecurityLevel"], 1);
+    expect(result1.data["totalCount"], 5);
   });
 
   test('listRoles', () async {
@@ -206,14 +205,14 @@ void main() {
     expect(result3["totalCount"], 0);
   });
 
-  test('computedPasswordSecurityLevel', () async {
-    int r = AuthClient.computedPasswordSecurityLevel("123");
+  test('computePasswordSecurityLevel', () async {
+    int r = AuthClient.computePasswordSecurityLevel("123");
     expect(r, 0);
 
-    r = AuthClient.computedPasswordSecurityLevel("1234Abcd");
+    r = AuthClient.computePasswordSecurityLevel("1234Abcd");
     expect(r, 1);
 
-    r = AuthClient.computedPasswordSecurityLevel("1234@Abcd");
+    r = AuthClient.computePasswordSecurityLevel("1234@Abcd");
     expect(r, 2);
   });
 

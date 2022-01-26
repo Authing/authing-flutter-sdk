@@ -174,4 +174,22 @@ void main() {
     AuthResult result = await AuthClient.mfaVerifyByPhone("136", "1234");
     expect(result.code, 200);
   });
+
+  test('mfaVerifyByEmail', () async {
+    Authing.init(pool, "61c173ada0e3aec651b1a1d1");
+    AuthResult result = await AuthClient.mfaVerifyByEmail("1@gmail.com", "1234");
+    expect(result.code, 200);
+  });
+
+  test('mfaVerifyByTOTP', () async {
+    Authing.init(pool, "61c173ada0e3aec651b1a1d1");
+    AuthResult result = await AuthClient.mfaVerifyByTOTP("123456");
+    expect(result.code, 200);
+  });
+
+  test('mfaVerifyByRecoveryCode', () async {
+    Authing.init(pool, "61c173ada0e3aec651b1a1d1");
+    AuthResult result = await AuthClient.mfaVerifyByRecoveryCode("123456");
+    expect(result.code, 200);
+  });
 }
