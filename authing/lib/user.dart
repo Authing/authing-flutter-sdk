@@ -5,6 +5,7 @@ class User {
   late String token;
   String? mfaToken;
   String? firstTimeLoginToken;
+  String? accessToken;
 
   late String username;
   late String nickname;
@@ -42,6 +43,12 @@ class User {
     user.token = map["token"].toString();
     if (map.containsKey("mfaToken")) {
       user.mfaToken = map["mfaToken"].toString();
+    }
+    if (map.containsKey("access_token")) {
+      user.accessToken = map["access_token"].toString();
+    }
+    if (map.containsKey("id_token")) {
+      user.token = map["id_token"].toString();
     }
 
     user.username = map["username"].toString();

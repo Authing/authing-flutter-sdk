@@ -8,6 +8,7 @@ import 'dart:convert';
 class AuthClient {
   static User? currentUser;
 
+  /// register a new user by email address and a password.
   static Future<AuthResult> registerByEmail(
       String email, String password) async {
     var body = jsonEncode({'email': email, 'password': Util.encrypt(password)});
@@ -17,6 +18,7 @@ class AuthClient {
     return authResult;
   }
 
+  /// register a new user by username and a password.
   static Future<AuthResult> registerByUserName(
       String username, String password) async {
     var body =
@@ -27,6 +29,7 @@ class AuthClient {
     return authResult;
   }
 
+  /// register a new user by phone number and an SMS verification code.
   static Future<AuthResult> registerByPhoneCode(
       String phone, String code, String password) async {
     var body = jsonEncode(
@@ -37,6 +40,7 @@ class AuthClient {
     return authResult;
   }
 
+  /// login by account and password.
   static Future<AuthResult> loginByAccount(
       String account, String password) async {
     var body =
@@ -47,6 +51,7 @@ class AuthClient {
     return authResult;
   }
 
+  /// login by phone number and an SMS verification code.
   static Future<AuthResult> loginByPhoneCode(String phone, String code) async {
     var body = jsonEncode({'phone': phone, 'code': code});
     final Result result = await post('/api/v2/login/phone-code', body);
@@ -55,6 +60,7 @@ class AuthClient {
     return authResult;
   }
 
+  /// login by LDAP username and password.
   static Future<AuthResult> loginByLDAP(
       String username, String password) async {
     var body =
@@ -65,6 +71,7 @@ class AuthClient {
     return authResult;
   }
 
+  /// login by AD username and password.
   static Future<AuthResult> loginByAD(String username, String password) async {
     var body =
         jsonEncode({'username': username, 'password': Util.encrypt(password)});
@@ -74,6 +81,7 @@ class AuthClient {
     return authResult;
   }
 
+  /// get current logged in user's profile.
   static Future<AuthResult> getCurrentUser() async {
     final Result result = await get('/api/v2/users/me');
     AuthResult authResult = AuthResult(result);
@@ -81,12 +89,14 @@ class AuthClient {
     return authResult;
   }
 
+  /// logout.
   static Future<AuthResult> logout() async {
     final Result result = await get('/api/v2/logout?app_id=' + Authing.sAppId);
     currentUser = null;
     return AuthResult(result);
   }
 
+  /// send an SMS code.
   static Future<AuthResult> sendSms(String phone,
       [String? phoneCountryCode]) async {
     Map map = {};
@@ -98,12 +108,14 @@ class AuthClient {
     return AuthResult(result);
   }
 
+  /// send an email.
   static Future<AuthResult> sendEmail(String email, String scene) async {
     var body = jsonEncode({'email': email, 'scene': scene});
     final Result result = await post('/api/v2/email/send', body);
     return AuthResult(result);
   }
 
+  /// get user's custom data. custom field should be defined via Authing console.
   static Future<AuthResult> getCustomData(String userId) async {
     final Result result =
         await get('/api/v2/udfs/values?targetType=USER&targetId=' + userId);
@@ -113,6 +125,7 @@ class AuthClient {
     return AuthResult(result);
   }
 
+  /// set user's custom data.
   static Future<AuthResult> setCustomData(List data) async {
     List list = [];
     for (var element in data) {
@@ -129,6 +142,7 @@ class AuthClient {
     return AuthResult(result);
   }
 
+  /// reset password by phone number and an SMS code.
   static Future<AuthResult> resetPasswordByPhoneCode(
       String phone, String code, String password) async {
     var body = jsonEncode(
@@ -137,6 +151,7 @@ class AuthClient {
     return AuthResult(result);
   }
 
+  /// reset password by email and an email code.
   static Future<AuthResult> resetPasswordByEmailCode(
       String email, String code, String password) async {
     var body = jsonEncode(
@@ -145,6 +160,7 @@ class AuthClient {
     return AuthResult(result);
   }
 
+  /// update current user's profile.
   static Future<AuthResult> updateProfile(Map map) async {
     var body = jsonEncode(map);
     final Result result = await post('/api/v2/users/profile/update', body);
@@ -155,6 +171,7 @@ class AuthClient {
     return authResult;
   }
 
+  /// update current user's password.
   static Future<AuthResult> updatePassword(String newPassword,
       [String? oldPassword]) async {
     Map map = {};
@@ -171,6 +188,7 @@ class AuthClient {
     return authResult;
   }
 
+  /// bind phone to current user.
   static Future<AuthResult> bindPhone(String phone, String code) async {
     var body = jsonEncode({'phone': phone, 'phoneCode': code});
     final Result result = await post('/api/v2/users/phone/bind', body);
@@ -181,6 +199,7 @@ class AuthClient {
     return authResult;
   }
 
+  /// unbind current user's phone number.
   static Future<AuthResult> unbindPhone() async {
     final Result result = await post('/api/v2/users/phone/unbind');
     AuthResult authResult = AuthResult(result);
@@ -190,8 +209,8 @@ class AuthClient {
     return authResult;
   }
 
-  // 2230 same phone number
-  // 1320004 phone already bind
+  /// 2230 same phone number
+  /// 1320004 phone already bind
   static Future<AuthResult> updatePhone(String phone, String phoneCode,
       [String? oldPhone,
       String? oldPhoneCode,
@@ -219,6 +238,7 @@ class AuthClient {
     return authResult;
   }
 
+  /// bind email to current user.
   static Future<AuthResult> bindEmail(String email, String code) async {
     var body = jsonEncode({'email': email, 'emailCode': code});
     final Result result = await post('/api/v2/users/email/bind', body);
@@ -229,6 +249,7 @@ class AuthClient {
     return authResult;
   }
 
+  /// unbind email to current user.
   // 1320009 no email
   // 1320010 no other login method
   static Future<AuthResult> unbindEmail() async {
@@ -240,6 +261,7 @@ class AuthClient {
     return authResult;
   }
 
+  /// update current user's email address.
   static Future<AuthResult> updateEmail(String email, String emailCode,
       [String? oldEmail, String? oldEmailCode]) async {
     Map map = {};
@@ -258,6 +280,7 @@ class AuthClient {
     return authResult;
   }
 
+  /// link current user with a social account
   static Future<AuthResult> link(
       String primaryUserToken, String secondaryUserToken) async {
     var body = jsonEncode({
@@ -272,6 +295,7 @@ class AuthClient {
     return authResult;
   }
 
+  /// unlink current user with a social account
   static Future<AuthResult> unlink(String provider) async {
     Map map = {};
     map.putIfAbsent('provider', () => provider);
@@ -286,7 +310,7 @@ class AuthClient {
     return authResult;
   }
 
-  // 0 low; 1 medium; 2 high
+  /// 0 low; 1 medium; 2 high
   static int computePasswordSecurityLevel(String password) {
     if (password.length < 6) {
       return 0;
@@ -310,16 +334,19 @@ class AuthClient {
     }
   }
 
+  /// get current account's security level
   static Future<Result> getSecurityLevel() async {
     return await get('/api/v2/users/me/security-level');
   }
 
+  /// list current user's roles
   static Future<Result> listRoles([String? namespace]) async {
     final Result result = await get('/api/v2/users/me/roles' +
         (namespace == null ? "" : "?namespace=" + namespace));
     return result;
   }
 
+  /// list authorized resources that current user's can access
   static Future<Map> listAuthorizedResources(String namespace,
       [String? resourceType]) async {
     Map map = {};
@@ -332,6 +359,7 @@ class AuthClient {
     return result.data;
   }
 
+  /// list applications that current user's can access
   static Future<Result> listApplications(
       [int? page = 1, int? limit = 10]) async {
     return await get('/api/v2/users/me/applications/allowed?page=' +
@@ -340,6 +368,7 @@ class AuthClient {
         limit.toString());
   }
 
+  /// list organizations that current user is part of
   static Future<Result> listOrgs() async {
     if (currentUser != null) {
       return await get('/api/v2/users/' + currentUser!.id + "/orgs");
@@ -350,6 +379,7 @@ class AuthClient {
     }
   }
 
+  /// reset password by first time login token
   static Future<AuthResult> resetPasswordByFirstLoginToken(
       String token, String password) async {
     var body = jsonEncode({'token': token, 'password': Util.encrypt(password)});
@@ -445,6 +475,32 @@ class AuthClient {
     return authResult;
   }
 
+  static Future<AuthResult> authByCode(
+      String code, String codeVerifier, String redirectUrl) async {
+    String body = "client_id=" +
+        Authing.sAppId +
+        "&grant_type=authorization_code" +
+        "&code=" +
+        code +
+        "&code_verifier=" +
+        codeVerifier +
+        "&redirect_uri=" +
+        redirectUrl;
+    var url = Uri.parse('https://' + Authing.sHost + '/oidc/token');
+    Map<String, String> headers = {
+      "x-authing-userpool-id": Authing.sUserPoolId,
+      "x-authing-app-id": Authing.sAppId,
+      "x-authing-request-from": "sdk-flutter",
+      "x-authing-sdk-version": Authing.VERSION,
+      "content-type": "application/x-www-form-urlencoded"
+    };
+    var response = await http.post(url, headers: headers, body: body);
+    final Result result = parseResponse(response);
+    AuthResult authResult = AuthResult(result);
+    authResult.user = createUser(result);
+    return authResult;
+  }
+
   static User? createUser(Result result) {
     if (result.code == 200) {
       currentUser = User.create(result.data);
@@ -472,7 +528,7 @@ class AuthClient {
     Map<String, String> headers = {
       "x-authing-userpool-id": Authing.sUserPoolId,
       "x-authing-app-id": Authing.sAppId,
-      "x-authing-request-from": "SDK@Flutter",
+      "x-authing-request-from": "sdk-flutter",
       "x-authing-sdk-version": Authing.VERSION,
       "content-type": "application/json"
     };
@@ -488,6 +544,11 @@ class AuthClient {
     var response = method.toLowerCase() == "get"
         ? await http.get(url, headers: headers)
         : await http.post(url, headers: headers, body: body);
+    final Result result = parseResponse(response);
+    return result;
+  }
+
+  static Result parseResponse(response) {
     Result result = Result();
     if (response.statusCode == 200 || response.statusCode == 201) {
       final Map parsed = jsonDecode(response.body);

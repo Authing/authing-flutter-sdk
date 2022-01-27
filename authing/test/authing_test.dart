@@ -192,4 +192,12 @@ void main() {
     AuthResult result = await AuthClient.mfaVerifyByRecoveryCode("123456");
     expect(result.code, 200);
   });
+
+  test('authByCode', () async {
+    AuthResult result = await AuthClient.authByCode("P6FENDfGSH72PxgJQk17FoGMWY3oL1G0D2PQ1AfyDeo",
+        "fu6IivbcEb7DFCytjLmoAICRtFLbG9zkk5QdDbNd0gG",
+        "https://guard.authing/redirect");
+    expect(result.code, 200);
+    expect(result.user?.accessToken != null, true);
+  });
 }

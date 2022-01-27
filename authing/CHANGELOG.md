@@ -1,3 +1,8 @@
+## 1.0.1
+
+* update doc
+* implement authByCode for OIDC connection
+
 ## 1.0.0
 
 * Implement all APIs

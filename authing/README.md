@@ -48,9 +48,57 @@ Contact Authing sales if you have any questions.
 <br>
 
 # APIs
-* [Basic Authentication](#authentication-api)
-* [Social](#social-api)
-* [MFA](#mfa-api)
+## [Basic Authentication](#authentication-api)
+* [Register by email](#register-by-email)
+* [Register by user name](#register-by-user-name)
+* [Register by phone code](#register-by-phone-code)
+* [Login by account and password](#login-by-account-and-password)
+* [Login by phone code](#login-by-phone-code)
+* [Login by LDAP](#login-by-ldap)
+* [Login by AD](#login-by-ad)
+* [Get current user](#get-current-user)
+* [Logout](#logout)
+* [Send SMS code](#send-sms-code)
+* [Send email](#send-email)
+* [Get user custom data](#get-user-custom-data)
+* [Set user custom data](#set-user-custom-data)
+* [Reset password by phone code](#reset-password-by-phone-code)
+* [Reset password by email code](#reset-password-by-email-code)
+* [Update user profile](#update-user-profile)
+* [Update password](#update-password)
+* [Bind phone](#bind-phone)
+* [Unbind phone](#unbind-phone)
+* [Update phone](#update-phone)
+* [Bind email](#bind-email)
+* [Unbind email](#unbind-email)
+* [Update email](#update-email)
+* [Link](#link)
+* [Unlink](#unlink)
+* [Compute password security level](#compute-password-security-level)
+* [Get security level](#get-security-level)
+* [List applications](#list-applications)
+* [List organizations](#list-organizations)
+* [List roles](#list-roles)
+* [List authorized resources](#list-authorized-resources)
+* [Reset password by first time login token](#reset-password-by-first-time-login-token)
+
+## [Social](#social-api)
+
+* [Login by wechat](#login-by-wechat)
+* [Login by alipay](#login-by-alipay)
+* [Login by apple](#login-by-apple)
+
+## [MFA](#mfa-api)
+
+* [MFA check](#mfa-check)
+* [MFA verify by phone](#MFA-verify-by-phone)
+* [MFA verify by email](#MFA-verify-by-email)
+* [MFA verify by TOTP](#MFA-verify-by-totp)
+* [MFA verify by recovery code](#MFA-verify-by-recovery-code)
+
+## [OIDC](#oidc-api)
+
+* [Login by OIDC authorization code](#auth-by-code)
 
 <br>
 
@@ -69,8 +117,7 @@ import 'package:authing_sdk/client.dart';
 Register a new user by email. The email is case insensitive and must be unique within a given user pool. After registration, emailVerified is false.
 
 ```dart
-static Future<AuthResult> registerByEmail(
-      String email, String password) async
+static Future<AuthResult> registerByEmail(String email, String password) async
 ```
 
 **params**
@@ -97,8 +144,7 @@ User user = result.user;
 Register a new user by user name. User name is case sensitive and must be unique within a given user pool.
 
 ```dart
-static Future<AuthResult> registerByUserName(
-      String username, String password) async
+static Future<AuthResult> registerByUserName(String username, String password) async
 ```
 
 **params**
@@ -126,8 +172,7 @@ Register a new user by phone number and a verification code. Phone number must b
 Must call [sendSms](#send-sms-code) method to get an SMS verification code before calling this method.
 
 ```dart
-static Future<AuthResult> registerByPhoneCode(
-      String phone, String code, String password) async
+static Future<AuthResult> registerByPhoneCode(String phone, String code, String password) async
 ```
 
 **params**
@@ -153,8 +198,7 @@ User user = result.user;
 ## Login by account and password
 
 ```dart
-static Future<AuthResult> loginByAccount(
-      String account, String password) async
+static Future<AuthResult> loginByAccount(String account, String password) async
 ```
 
 **params**
@@ -204,8 +248,7 @@ User user = result.user; // get user info
 ## Login by LDAP
 
 ```dart
-static Future<AuthResult> loginByLDAP(
-      String username, String password) async
+static Future<AuthResult> loginByLDAP(String username, String password) async
 ```
 
 **params**
@@ -229,8 +272,7 @@ User user = result.user; // user info
 ## Login by AD
 
 ```dart
-static Future<AuthResult> loginByAD(
-      String username, String password) async
+static Future<AuthResult> loginByAD(String username, String password) async
 ```
 
 **params**
@@ -298,8 +340,7 @@ var code = result.code;
 Send an SMS verification code
 
 ```dart
-static Future<AuthResult> sendSms(String phone,
-      [String? phoneCountryCode]) async
+static Future<AuthResult> sendSms(String phone, [String? phoneCountryCode]) async
 ```
 
 **params**
@@ -405,8 +446,7 @@ AuthResult result = await AuthClient.setCustomData(AuthClient.currentUser!.custo
 Reset user password using SMS verification code. Must call [sendEmail](#send-email) method with scene "RESET_PASSWORD" to get an emmail verification code before calling this method.
 
 ```dart
-static Future<AuthResult> resetPasswordByPhoneCode(
-      String phone, String code, String password) async
+static Future<AuthResult> resetPasswordByPhoneCode(String phone, String code, String password) async
 ```
 
 **params**
@@ -433,8 +473,7 @@ expect(result.code, 200);
 Reset user password using email verification code. Must call [sendSms](#send-sms-code) method to get an SMS verification code before calling this method.
 
 ```dart
-static Future<AuthResult> resetPasswordByEmailCode(
-      String email, String code, String password) async
+static Future<AuthResult> resetPasswordByEmailCode(String email, String code, String password) async
 ```
 
 **params**
@@ -966,8 +1005,7 @@ Get authorized resources of current user. Note that the result is a **Map**.
 Must log in first
 
 ```dart
-static Future<Map> listAuthorizedResources(String namespace,
-      [String? resourceType]) async
+static Future<Map> listAuthorizedResources(String namespace, [String? resourceType]) async
 ```
 
 **params**
@@ -1012,8 +1050,7 @@ If this feature is enabled, user must reset password first time login
 
 
 ```dart
-static Future<AuthResult> resetPasswordByFirstLoginToken(
-      String token, String password) async
+static Future<AuthResult> resetPasswordByFirstLoginToken(String token, String password) async
 ```
 
 **params**
@@ -1203,6 +1240,35 @@ static Future<AuthResult> mfaVerifyByRecoveryCode(String code) async
 
 ```dart
 AuthResult result = await AuthClient.mfaVerifyByRecoveryCode("1234");
+```
+
+<br>
+
+# OIDC API
+
+## Auth by code
+
+After OIDC authentication, we will get an authorization code. Use this API to get user's access token & id token. Note that since we are front end, we cannot set OIDC client secret, instead, we have to use PKCE to get the code.
+
+
+```dart
+static Future<AuthResult> authByCode(String code, String codeVerifier, String redirectUrl) async
+```
+
+**params**
+
+* *code* authorization code
+* *codeVerifier* PKCE code verifier
+* *redirectUrl* a valid url set in Authing console
+
+**example**
+
+```dart
+AuthResult result = await AuthClient.authByCode("P6FENDfGSH72PxgJQk17FoGMWY3oL1G0D2PQ1AfyDeo",
+        "fu6IivbcEb7DFCytjLmoAICRtFLbG9zkk5QdDbNd0gG",
+        "https://guard.authing/redirect");
+String ak = result.user?.accessToken;
+String idToken = result.user?.token;
 ```
 
 <br>
