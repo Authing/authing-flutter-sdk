@@ -161,7 +161,7 @@ User user = result.user;
 
 **error**
 
-* 2026 if email has been registered already
+* 2026 if username has been registered already
 
 <br>
 
@@ -229,7 +229,7 @@ static Future<AuthResult> loginByPhoneCode(String phone, String code) async
 
 **params**
 
-* *account* can be one of the following: phone number / email / user name
+* *phone* phone number
 * *code* SMS code
 
 **example**
@@ -277,7 +277,7 @@ static Future<AuthResult> loginByAD(String username, String password) async
 
 **params**
 
-* *username* ldap username
+* *username* AD username
 * *password* clear text password
 
 **example**
@@ -443,10 +443,37 @@ AuthResult result = await AuthClient.setCustomData(AuthClient.currentUser!.custo
 
 ## Reset password by phone code
 
-Reset user password using SMS verification code. Must call [sendEmail](#send-email) method with scene "RESET_PASSWORD" to get an emmail verification code before calling this method.
+Reset user password using email verification code. Must call [sendSms](#send-sms-code) method to get an SMS verification code before calling this method.
 
 ```dart
 static Future<AuthResult> resetPasswordByPhoneCode(String phone, String code, String password) async
+```
+
+**params**
+
+* *phone* phone number
+* *code* SMS verification code
+* *password* clear text password
+
+**example**
+
+```dart
+AuthResult result = await AuthClient.resetPasswordByPhoneCode("13012345678", "1234", "strong");
+expect(result.code, 200);
+```
+
+**error**
+
+* 2004 user not exist
+
+<br>
+
+## Reset password by email code
+
+Reset user password using SMS verification code. Must call [sendEmail](#send-email) method with scene "RESET_PASSWORD" to get an emmail verification code before calling this method.
+
+```dart
+static Future<AuthResult> resetPasswordByEmailCode(String email, String code, String password) async
 ```
 
 **params**
@@ -468,33 +495,6 @@ expect(result.code, 200);
 
 <br>
 
-## Reset password by email code
-
-Reset user password using email verification code. Must call [sendSms](#send-sms-code) method to get an SMS verification code before calling this method.
-
-```dart
-static Future<AuthResult> resetPasswordByEmailCode(String email, String code, String password) async
-```
-
-**params**
-
-* *phone* phone number
-* *code* email code
-* *password* clear text password
-
-**example**
-
-```dart
-AuthResult result = await AuthClient.resetPasswordByPhoneCode("13012345678", "1234", "strong");
-expect(result.code, 200);
-```
-
-**error**
-
-* 2004 user not exist
-
-<br>
-
 ## Update user profile
 
 Update user profile. Note phone, email and password cannot be updated using this method. Please call [updatePhone](#update-phone) / [updateEmail](#update-email) / [updatePassword](#update-password) respectively.
@@ -507,7 +507,7 @@ static Future<AuthResult> updateProfile(Map map) async
 
 **params**
 
-* *map* user data which needs to be updated
+* *map* user data needs to be updated
 
 **full list** of field that can be used as key in the *map* parameter
 
@@ -864,7 +864,7 @@ int score = result.data["score"];
 
 ## List applications
 
-Get all the applications that the current user has access. Note that the result is not AuthResult, it is a general Result oject.
+Get all applications that the current user has access. Note that the result is not AuthResult, it is a general Result oject.
 
 Must log in first
 
@@ -919,7 +919,7 @@ int count = result.data["totalCount"];
 
 ## List organizations
 
-Get all the organizations that the current user is in. Note that the result is not AuthResult, it is a general Result oject.
+Get all organizations that the current user is in. Note that the result is not AuthResult, it is a general Result oject.
 
 Must log in first
 
@@ -1046,7 +1046,7 @@ String result["list"][0]["code"];
 
 ## Reset password by first time login token
 
-If this feature is enabled, user must reset password first time login
+If this feature is enabled, user must reset password after first time login
 
 
 ```dart
