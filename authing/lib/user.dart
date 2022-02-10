@@ -6,6 +6,7 @@ class User {
   String? mfaToken;
   String? firstTimeLoginToken;
   String? accessToken;
+  String? refreshToken;
 
   late String username;
   late String nickname;
@@ -50,6 +51,9 @@ class User {
     if (map.containsKey("id_token")) {
       user.token = map["id_token"].toString();
     }
+    if (map.containsKey("refresh_token")) {
+      user.refreshToken = map["refresh_token"].toString();
+    }
 
     user.username = map["username"].toString();
     user.nickname = map["nickname"].toString();
@@ -75,7 +79,9 @@ class User {
     user.postalCode = map["postalCode"].toString();
     user.city = map["city"].toString();
     user.province = map["province"].toString();
-    user.token = map["token"].toString();
+    if (map.containsKey("token")) {
+      user.token = map["token"].toString();
+    }
     user.country = map["country"].toString();
     return user;
   }

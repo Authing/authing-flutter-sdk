@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:authing/authing.dart';
-import 'package:authing/client.dart';
+import 'package:authing_sdk/authing.dart';
+import 'package:authing_sdk/client.dart';
 
 void main() {
   runApp(const MyApp());

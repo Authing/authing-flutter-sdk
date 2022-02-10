@@ -29,7 +29,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  authing:
+  authing_sdk:
     path: ./authing
 
 
