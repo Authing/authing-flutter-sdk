@@ -1123,7 +1123,7 @@ static Future<AuthResult> loginByApple(String code) async
 
 **params**
 
-* *code* auth code returned by wechat
+* *code* auth code returned by apple
 
 **example**
 
