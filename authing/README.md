@@ -363,7 +363,7 @@ var code = result.code;
 
 ## Send email
 
-Send an email verification code
+Send an email to the given email addrees
 
 ```dart
 static Future<AuthResult> sendEmail(String email, String scene) async
@@ -371,7 +371,7 @@ static Future<AuthResult> sendEmail(String email, String scene) async
 
 **params**
 
-* *email* email address to receive the code
+* *email* email address
 * *scene* can be one of the following: RESET_PASSWORD, VERIFY_EMAIL, CHANGE_EMAIL, MFA_VERIFY
 
 **example**
@@ -906,7 +906,7 @@ int count = result.data["totalCount"];
                 "template": null
             }
         ],
-        "totalCount": 5
+        "totalCount": 1
     }
 }
 ```
