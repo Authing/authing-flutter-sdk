@@ -394,8 +394,8 @@ class AuthClient {
   static Future<AuthResult> resetPasswordByFirstLoginToken(
       String token, String password) async {
     var body = jsonEncode({'token': token, 'password': Util.encrypt(password)});
-    final Result result = await post(
-        '/api/v2/users/password/reset-by-first-login-token', body);
+    final Result result =
+        await post('/api/v2/users/password/reset-by-first-login-token', body);
     AuthResult authResult = AuthResult(result);
     if (result.code == 200) {
       authResult.user = createUser(result);
@@ -403,14 +403,17 @@ class AuthClient {
     return authResult;
   }
 
+  /// login by wechat auth code
   static Future<AuthResult> loginByWechat(String connId, String code) async {
     return socialLogin("wechatMobile", connId, code);
   }
 
+  /// login by alipay auth code
   static Future<AuthResult> loginByAlipay(String connId, String code) async {
     return socialLogin("alipay", connId, code);
   }
 
+  /// login by apple auth code
   static Future<AuthResult> loginByApple(String code) async {
     var body = jsonEncode({'code': code});
     final Result result = await post(
@@ -424,6 +427,7 @@ class AuthClient {
     return authResult;
   }
 
+  /// general social login method
   static Future<AuthResult> socialLogin(
       String type, String connId, String code) async {
     var body = jsonEncode({'connId': connId, 'code': code});
@@ -434,6 +438,7 @@ class AuthClient {
     return authResult;
   }
 
+  /// check if phone number or email address can be used for MFA
   static Future<bool> mfaCheck(String? phone, String? email) async {
     Map map = {};
     if (phone != null) {
@@ -450,6 +455,7 @@ class AuthClient {
     return false;
   }
 
+  /// MFA by phone number and SMS verify code
   static Future<AuthResult> mfaVerifyByPhone(String phone, String code) async {
     var body = jsonEncode({'phone': phone, 'code': code});
     final Result result =
@@ -459,6 +465,7 @@ class AuthClient {
     return authResult;
   }
 
+  /// MFA by email address and SMS verify code
   static Future<AuthResult> mfaVerifyByEmail(String email, String code) async {
     var body = jsonEncode({'email': email, 'code': code});
     final Result result =
@@ -468,6 +475,7 @@ class AuthClient {
     return authResult;
   }
 
+  /// MFA TOTP (Time-based One Time Password)
   static Future<AuthResult> mfaVerifyByTOTP(String code) async {
     var body = jsonEncode({'authenticatorType': 'totp', 'totp': code});
     final Result result =
@@ -477,6 +485,7 @@ class AuthClient {
     return authResult;
   }
 
+  /// MFA by recovery code
   static Future<AuthResult> mfaVerifyByRecoveryCode(String code) async {
     var body = jsonEncode({'authenticatorType': 'totp', 'recoveryCode': code});
     final Result result =
@@ -486,18 +495,22 @@ class AuthClient {
     return authResult;
   }
 
+  /// delete account (irreversible)
   static Future<Result> deleteAccount() async {
     return await delete('/api/v2/users/delete');
   }
 
+  /// mark qr code as scanned. web page will show avatar on top
   static Future<Result> markQRCodeScanned(String ticket) async {
     return await post('/api/v2/qrcode/scanned', jsonEncode({'random': ticket}));
   }
 
+  /// login by QR code
   static Future<Result> loginByScannedTicket(String ticket) async {
     return await post('/api/v2/qrcode/confirm', jsonEncode({'random': ticket}));
   }
 
+  /// auth by OIDC code
   static Future<AuthResult> authByCode(
       String code, String codeVerifier, String redirectUrl) async {
     String body = "client_id=" +
