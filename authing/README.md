@@ -1297,7 +1297,7 @@ Authing QR code data structure:
 
 ## mark QR code scanned
 
-After calling this API, the web page will show "Scanned" as well as user avatar on top of the QR code
+After calling this API, the web page will show user avatar on top of the QR code
 
 >Must call one of the login method first so that we have a logged in user
 
@@ -1326,7 +1326,7 @@ Login the web application by the QR code that has been shown to user
 
 
 ```dart
-  static Future<Result> loginByScannedTicket(String ticket) async
+static Future<Result> loginByScannedTicket(String ticket) async
 ```
 
 **params**
