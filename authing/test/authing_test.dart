@@ -16,6 +16,7 @@ void main() {
     AuthResult result = await AuthClient.registerByPhoneCode(phone, "9314", "111111");
     expect(result.code, 200);
     expect(result.user?.phone, phone);
+    expect(result.user?.token != null, true);
 
     AuthResult result2 = await AuthClient.loginByAccount(phone, "111111");
     expect(result2.code, 200);
@@ -199,5 +200,17 @@ void main() {
         "https://guard.authing/redirect");
     expect(result.code, 200);
     expect(result.user?.accessToken != null, true);
+  });
+
+  test('login by scanning QR code', () async {
+    AuthResult result = await AuthClient.loginByAccount("ci", "111111");
+    expect(result.code, 200);
+
+    String random = "xPkqaoEd0ljqUTqwzoitaEblTJFcbC";
+    Result result2 = await AuthClient.markQRCodeScanned(random);
+    expect(result2.code, 200);
+
+    result2 = await AuthClient.loginByScannedTicket(random);
+    expect(result2.code, 200);
   });
 }

@@ -15,6 +15,7 @@ void main() {
     AuthResult result = await AuthClient.registerByEmail("1@1.com", "111111");
     expect(result.code, 200);
     expect(result.user?.email, "1@1.com");
+    expect(result.user?.token != null, true);
 
     AuthResult result2 = await AuthClient.loginByAccount("1@1.com", "111111");
     expect(result2.code, 200);
@@ -25,12 +26,19 @@ void main() {
 
     AuthResult result4 = await AuthClient.registerByEmail("1", "111111");
     expect(result4.code, 2003);
+
+    Result result5 = await AuthClient.deleteAccount();
+    expect(result5.code, 200);
+
+    AuthResult result6 = await AuthClient.loginByAccount("1@1.com", "111111");
+    expect(result6.code, 2333);
   });
 
   test('register by username', () async {
     AuthResult result = await AuthClient.registerByUserName("test1024", "111111");
     expect(result.code, 200);
     expect(result.user?.username, "test1024");
+    expect(result.user?.token != null, true);
 
     AuthResult result2 = await AuthClient.loginByAccount("test1024", "111111");
     expect(result2.code, 200);
@@ -38,6 +46,12 @@ void main() {
 
     AuthResult result3 = await AuthClient.registerByUserName("test1024", "111111");
     expect(result3.code, 2026);
+
+    Result result5 = await AuthClient.deleteAccount();
+    expect(result5.code, 200);
+
+    AuthResult result6 = await AuthClient.loginByAccount("1@1.com", "111111");
+    expect(result6.code, 2333);
   });
 
   test('login by account', () async {

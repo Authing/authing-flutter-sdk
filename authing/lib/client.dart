@@ -11,7 +11,11 @@ class AuthClient {
   /// register a new user by email address and a password.
   static Future<AuthResult> registerByEmail(
       String email, String password) async {
-    var body = jsonEncode({'email': email, 'password': Util.encrypt(password)});
+    var body = jsonEncode({
+      'email': email,
+      'password': Util.encrypt(password),
+      'forceLogin': true
+    });
     final Result result = await post('/api/v2/register/email', body);
     AuthResult authResult = AuthResult(result);
     authResult.user = User.create(result.data);
@@ -21,8 +25,11 @@ class AuthClient {
   /// register a new user by username and a password.
   static Future<AuthResult> registerByUserName(
       String username, String password) async {
-    var body =
-        jsonEncode({'username': username, 'password': Util.encrypt(password)});
+    var body = jsonEncode({
+      'username': username,
+      'password': Util.encrypt(password),
+      'forceLogin': true
+    });
     final Result result = await post('/api/v2/register/username', body);
     AuthResult authResult = AuthResult(result);
     authResult.user = User.create(result.data);
@@ -32,8 +39,12 @@ class AuthClient {
   /// register a new user by phone number and an SMS verification code.
   static Future<AuthResult> registerByPhoneCode(
       String phone, String code, String password) async {
-    var body = jsonEncode(
-        {'phone': phone, 'code': code, 'password': Util.encrypt(password)});
+    var body = jsonEncode({
+      'phone': phone,
+      'code': code,
+      'password': Util.encrypt(password),
+      'forceLogin': true
+    });
     final Result result = await post('/api/v2/register/phone-code', body);
     AuthResult authResult = AuthResult(result);
     authResult.user = User.create(result.data);
@@ -287,7 +298,7 @@ class AuthClient {
       'primaryUserToken': primaryUserToken,
       'secondaryUserToken': secondaryUserToken
     });
-    final Result result = await post('/api/v2/users/link', jsonEncode(body));
+    final Result result = await post('/api/v2/users/link', body);
     AuthResult authResult = AuthResult(result);
     if (result.code == 200) {
       authResult.user = createUser(result);
@@ -384,7 +395,7 @@ class AuthClient {
       String token, String password) async {
     var body = jsonEncode({'token': token, 'password': Util.encrypt(password)});
     final Result result = await post(
-        '/api/v2/users/password/reset-by-first-login-token', jsonEncode(body));
+        '/api/v2/users/password/reset-by-first-login-token', body);
     AuthResult authResult = AuthResult(result);
     if (result.code == 200) {
       authResult.user = createUser(result);
@@ -417,7 +428,7 @@ class AuthClient {
       String type, String connId, String code) async {
     var body = jsonEncode({'connId': connId, 'code': code});
     final Result result =
-        await post('/api/v2/ecConn/' + type + '/authByCode', jsonEncode(body));
+        await post('/api/v2/ecConn/' + type + '/authByCode', body);
     AuthResult authResult = AuthResult(result);
     authResult.user = createUser(result);
     return authResult;
@@ -442,7 +453,7 @@ class AuthClient {
   static Future<AuthResult> mfaVerifyByPhone(String phone, String code) async {
     var body = jsonEncode({'phone': phone, 'code': code});
     final Result result =
-        await post('/api/v2/applications/mfa/sms/verify', jsonEncode(body));
+        await post('/api/v2/applications/mfa/sms/verify', body);
     AuthResult authResult = AuthResult(result);
     authResult.user = createUser(result);
     return authResult;
@@ -451,7 +462,7 @@ class AuthClient {
   static Future<AuthResult> mfaVerifyByEmail(String email, String code) async {
     var body = jsonEncode({'email': email, 'code': code});
     final Result result =
-        await post('/api/v2/applications/mfa/email/verify', jsonEncode(body));
+        await post('/api/v2/applications/mfa/email/verify', body);
     AuthResult authResult = AuthResult(result);
     authResult.user = createUser(result);
     return authResult;
@@ -460,7 +471,7 @@ class AuthClient {
   static Future<AuthResult> mfaVerifyByTOTP(String code) async {
     var body = jsonEncode({'authenticatorType': 'totp', 'totp': code});
     final Result result =
-        await post('/api/v2/applications/mfa/totp/verify', jsonEncode(body));
+        await post('/api/v2/applications/mfa/totp/verify', body);
     AuthResult authResult = AuthResult(result);
     authResult.user = createUser(result);
     return authResult;
@@ -469,10 +480,22 @@ class AuthClient {
   static Future<AuthResult> mfaVerifyByRecoveryCode(String code) async {
     var body = jsonEncode({'authenticatorType': 'totp', 'recoveryCode': code});
     final Result result =
-        await post('/api/v2/applications/mfa/totp/recovery', jsonEncode(body));
+        await post('/api/v2/applications/mfa/totp/recovery', body);
     AuthResult authResult = AuthResult(result);
     authResult.user = createUser(result);
     return authResult;
+  }
+
+  static Future<Result> deleteAccount() async {
+    return await delete('/api/v2/users/delete');
+  }
+
+  static Future<Result> markQRCodeScanned(String ticket) async {
+    return await post('/api/v2/qrcode/scanned', jsonEncode({'random': ticket}));
+  }
+
+  static Future<Result> loginByScannedTicket(String ticket) async {
+    return await post('/api/v2/qrcode/confirm', jsonEncode({'random': ticket}));
   }
 
   static Future<AuthResult> authByCode(
@@ -522,6 +545,10 @@ class AuthClient {
     return request("post", endpoint, body);
   }
 
+  static Future<Result> delete(String endpoint, [String? body]) {
+    return request("delete", endpoint, body);
+  }
+
   static Future<Result> request(String method, String endpoint,
       [String? body]) async {
     var url = Uri.parse('https://' + Authing.sHost + endpoint);
@@ -541,11 +568,17 @@ class AuthClient {
             "Authorization", () => "Bearer " + currentUser!.token);
       }
     }
-    var response = method.toLowerCase() == "get"
-        ? await http.get(url, headers: headers)
-        : await http.post(url, headers: headers, body: body);
-    final Result result = parseResponse(response);
-    return result;
+
+    method = method.toLowerCase();
+    http.Response? response;
+    if (method == 'get') {
+      response = await http.get(url, headers: headers);
+    } else if (method == 'post') {
+      response = await http.post(url, headers: headers, body: body);
+    } else if (method == 'delete') {
+      response = await http.delete(url, headers: headers, body: body);
+    }
+    return parseResponse(response);
   }
 
   static Result parseResponse(response) {
