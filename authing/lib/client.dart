@@ -1,3 +1,5 @@
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'authing.dart';
 import 'util.dart';
 import 'user.dart';
@@ -6,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class AuthClient {
+  static const String keyToken = "authing_id_token";
   static User? currentUser;
 
   /// register a new user by email address and a password.
@@ -18,7 +21,7 @@ class AuthClient {
     });
     final Result result = await post('/api/v2/register/email', body);
     AuthResult authResult = AuthResult(result);
-    authResult.user = User.create(result.data);
+    authResult.user = await createUser(result);
     return authResult;
   }
 
@@ -32,7 +35,7 @@ class AuthClient {
     });
     final Result result = await post('/api/v2/register/username', body);
     AuthResult authResult = AuthResult(result);
-    authResult.user = User.create(result.data);
+    authResult.user = await createUser(result);
     return authResult;
   }
 
@@ -47,7 +50,7 @@ class AuthClient {
     });
     final Result result = await post('/api/v2/register/phone-code', body);
     AuthResult authResult = AuthResult(result);
-    authResult.user = User.create(result.data);
+    authResult.user = await createUser(result);
     return authResult;
   }
 
@@ -58,7 +61,7 @@ class AuthClient {
         jsonEncode({'account': account, 'password': Util.encrypt(password)});
     final Result result = await post('/api/v2/login/account', body);
     AuthResult authResult = AuthResult(result);
-    authResult.user = createUser(result);
+    authResult.user = await createUser(result);
     return authResult;
   }
 
@@ -67,7 +70,7 @@ class AuthClient {
     var body = jsonEncode({'phone': phone, 'code': code});
     final Result result = await post('/api/v2/login/phone-code', body);
     AuthResult authResult = AuthResult(result);
-    authResult.user = createUser(result);
+    authResult.user = await createUser(result);
     return authResult;
   }
 
@@ -78,7 +81,7 @@ class AuthClient {
         jsonEncode({'username': username, 'password': Util.encrypt(password)});
     final Result result = await post('/api/v2/login/ldap', body);
     AuthResult authResult = AuthResult(result);
-    authResult.user = createUser(result);
+    authResult.user = await createUser(result);
     return authResult;
   }
 
@@ -88,7 +91,7 @@ class AuthClient {
         jsonEncode({'username': username, 'password': Util.encrypt(password)});
     final Result result = await post('/api/v2/login/ad', body);
     AuthResult authResult = AuthResult(result);
-    authResult.user = createUser(result);
+    authResult.user = await createUser(result);
     return authResult;
   }
 
@@ -96,7 +99,7 @@ class AuthClient {
   static Future<AuthResult> getCurrentUser() async {
     final Result result = await get('/api/v2/users/me');
     AuthResult authResult = AuthResult(result);
-    authResult.user = User.create(result.data);
+    authResult.user = await createUser(result);
     return authResult;
   }
 
@@ -177,7 +180,7 @@ class AuthClient {
     final Result result = await post('/api/v2/users/profile/update', body);
     AuthResult authResult = AuthResult(result);
     if (result.code == 200) {
-      authResult.user = createUser(result);
+      authResult.user = await createUser(result);
     }
     return authResult;
   }
@@ -194,7 +197,7 @@ class AuthClient {
         await post('/api/v2/password/update', jsonEncode(map));
     AuthResult authResult = AuthResult(result);
     if (result.code == 200) {
-      authResult.user = createUser(result);
+      authResult.user = await createUser(result);
     }
     return authResult;
   }
@@ -205,7 +208,7 @@ class AuthClient {
     final Result result = await post('/api/v2/users/phone/bind', body);
     AuthResult authResult = AuthResult(result);
     if (result.code == 200) {
-      authResult.user = createUser(result);
+      authResult.user = await createUser(result);
     }
     return authResult;
   }
@@ -215,7 +218,7 @@ class AuthClient {
     final Result result = await post('/api/v2/users/phone/unbind');
     AuthResult authResult = AuthResult(result);
     if (result.code == 200) {
-      authResult.user = createUser(result);
+      authResult.user = await createUser(result);
     }
     return authResult;
   }
@@ -244,7 +247,7 @@ class AuthClient {
         await post('/api/v2/users/phone/update', jsonEncode(map));
     AuthResult authResult = AuthResult(result);
     if (result.code == 200) {
-      authResult.user = createUser(result);
+      authResult.user = await createUser(result);
     }
     return authResult;
   }
@@ -255,7 +258,7 @@ class AuthClient {
     final Result result = await post('/api/v2/users/email/bind', body);
     AuthResult authResult = AuthResult(result);
     if (result.code == 200) {
-      authResult.user = createUser(result);
+      authResult.user = await createUser(result);
     }
     return authResult;
   }
@@ -267,7 +270,7 @@ class AuthClient {
     final Result result = await post('/api/v2/users/email/unbind');
     AuthResult authResult = AuthResult(result);
     if (result.code == 200) {
-      authResult.user = createUser(result);
+      authResult.user = await createUser(result);
     }
     return authResult;
   }
@@ -286,7 +289,7 @@ class AuthClient {
         await post('/api/v2/users/email/update', jsonEncode(map));
     AuthResult authResult = AuthResult(result);
     if (result.code == 200) {
-      authResult.user = createUser(result);
+      authResult.user = await createUser(result);
     }
     return authResult;
   }
@@ -301,7 +304,7 @@ class AuthClient {
     final Result result = await post('/api/v2/users/link', body);
     AuthResult authResult = AuthResult(result);
     if (result.code == 200) {
-      authResult.user = createUser(result);
+      authResult.user = await createUser(result);
     }
     return authResult;
   }
@@ -316,7 +319,7 @@ class AuthClient {
     final Result result = await post('/api/v2/users/unlink', jsonEncode(map));
     AuthResult authResult = AuthResult(result);
     if (result.code == 200) {
-      authResult.user = createUser(result);
+      authResult.user = await createUser(result);
     }
     return authResult;
   }
@@ -370,6 +373,16 @@ class AuthClient {
     return result.data;
   }
 
+  /// get new id token
+  static Future<AuthResult> updateIdToken() async {
+    final Result result = await post('/api/v2/users/refresh-token', null);
+    AuthResult authResult = AuthResult(result);
+    if (result.code == 200) {
+      authResult.user = await createUser(result);
+    }
+    return authResult;
+  }
+
   /// list applications that current user's can access
   static Future<Result> listApplications(
       [int? page = 1, int? limit = 10]) async {
@@ -398,7 +411,7 @@ class AuthClient {
         await post('/api/v2/users/password/reset-by-first-login-token', body);
     AuthResult authResult = AuthResult(result);
     if (result.code == 200) {
-      authResult.user = createUser(result);
+      authResult.user = await createUser(result);
     }
     return authResult;
   }
@@ -423,7 +436,7 @@ class AuthClient {
             Authing.sAppId,
         jsonEncode(body));
     AuthResult authResult = AuthResult(result);
-    authResult.user = createUser(result);
+    authResult.user = await createUser(result);
     return authResult;
   }
 
@@ -434,7 +447,7 @@ class AuthClient {
     final Result result =
         await post('/api/v2/ecConn/' + type + '/authByCode', body);
     AuthResult authResult = AuthResult(result);
-    authResult.user = createUser(result);
+    authResult.user = await createUser(result);
     return authResult;
   }
 
@@ -461,7 +474,7 @@ class AuthClient {
     final Result result =
         await post('/api/v2/applications/mfa/sms/verify', body);
     AuthResult authResult = AuthResult(result);
-    authResult.user = createUser(result);
+    authResult.user = await createUser(result);
     return authResult;
   }
 
@@ -471,7 +484,7 @@ class AuthClient {
     final Result result =
         await post('/api/v2/applications/mfa/email/verify', body);
     AuthResult authResult = AuthResult(result);
-    authResult.user = createUser(result);
+    authResult.user = await createUser(result);
     return authResult;
   }
 
@@ -481,7 +494,7 @@ class AuthClient {
     final Result result =
         await post('/api/v2/applications/mfa/totp/verify', body);
     AuthResult authResult = AuthResult(result);
-    authResult.user = createUser(result);
+    authResult.user = await createUser(result);
     return authResult;
   }
 
@@ -491,7 +504,7 @@ class AuthClient {
     final Result result =
         await post('/api/v2/applications/mfa/totp/recovery', body);
     AuthResult authResult = AuthResult(result);
-    authResult.user = createUser(result);
+    authResult.user = await createUser(result);
     return authResult;
   }
 
@@ -533,13 +546,15 @@ class AuthClient {
     var response = await http.post(url, headers: headers, body: body);
     final Result result = parseResponse(response);
     AuthResult authResult = AuthResult(result);
-    authResult.user = createUser(result);
+    authResult.user = await createUser(result);
     return authResult;
   }
 
-  static User? createUser(Result result) {
+  static Future<User?> createUser(Result result) async {
     if (result.code == 200) {
       currentUser = User.create(result.data);
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString(keyToken, currentUser!.token);
     } else if (result.code == 1636) {
       currentUser = User();
       currentUser!.mfaToken = result.data["mfaToken"];
@@ -579,6 +594,12 @@ class AuthClient {
       } else {
         headers.putIfAbsent(
             "Authorization", () => "Bearer " + currentUser!.token);
+      }
+    } else {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString(keyToken);
+      if (token != null) {
+        headers.putIfAbsent("Authorization", () => "Bearer " + token);
       }
     }
 

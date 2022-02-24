@@ -80,6 +80,7 @@ Contact Authing sales if you have any questions.
 * [List organizations](#list-organizations)
 * [List roles](#list-roles)
 * [List authorized resources](#list-authorized-resources)
+* [Update id token](#update-id-token)
 * [Reset password by first time login token](#reset-password-by-first-time-login-token)
 
 ## [Social](#social-api)
@@ -1041,6 +1042,28 @@ String result["list"][0]["code"];
         }
     ]
 }
+```
+
+**error**
+
+* 2020 must log in first
+
+<br>
+
+## Update id token
+
+Get new id token using current user's id token
+
+Must log in first
+
+```dart
+static Future<AuthResult> updateIdToken() async
+```
+
+**example**
+
+```dart
+Map result = await AuthClient.updateIdToken();
 ```
 
 **error**

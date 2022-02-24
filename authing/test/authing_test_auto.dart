@@ -164,7 +164,7 @@ void main() {
 
     Result result1 = await AuthClient.getSecurityLevel();
     expect(result1.code, 200);
-    expect(result1.data["score"], 75);
+    expect(result1.data["score"], 70);
     expect(result1.data["passwordSecurityLevel"], 1);
   });
 
@@ -175,7 +175,7 @@ void main() {
 
     Result result1 = await AuthClient.listApplications();
     expect(result1.code, 200);
-    expect(result1.data["totalCount"], 5);
+    expect(result1.data["totalCount"], 6);
   });
 
   test('listRoles', () async {
@@ -191,7 +191,7 @@ void main() {
 
     result1 = await AuthClient.listRoles("60caaf414f9323f25f64b2f4");
     list = result1.data["data"];
-    expect(list.length, 1);
+    expect(list.length, 2);
     expect(list[0]["code"], "admin");
   });
 
@@ -242,6 +242,19 @@ void main() {
     expect(list[0][3]["name"], "JavaDevHR");
   });
 
+  test('updateIdToken', () async {
+    AuthResult result = await AuthClient.loginByAccount("ci", "111111");
+    expect(result.code, 200);
+
+    result = await AuthClient.updateIdToken();
+    expect(result.code, 200);
+
+    AuthClient.currentUser = null;
+
+    result = await AuthClient.updateIdToken();
+    expect(result.code, 200);
+  });
+
   test('mfaCheck', () async {
     Authing.init(pool, "61c173ada0e3aec651b1a1d1");
 
@@ -253,8 +266,5 @@ void main() {
 
     r = await AuthClient.mfaCheck("abc@gmail.com", null);
     expect(r, true);
-
-    r = await AuthClient.mfaCheck(null, "maolongdong@gmail.com");
-    expect(r, false);
   });
 }

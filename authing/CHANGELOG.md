@@ -1,3 +1,15 @@
+## 1.0.7
+
+* update doc
+
+## 1.0.6
+
+* add updateIdToken API
+
+## 1.0.5
+
+* format code
+
 ## 1.0.4
 
 * add deleteAccount API
