@@ -1,3 +1,7 @@
+## 1.0.8
+
+* fix SharedPreferences mock issue
+
 ## 1.0.7
 
 * update doc

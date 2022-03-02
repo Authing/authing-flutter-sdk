@@ -3,8 +3,13 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:authing_sdk/authing.dart';
 import 'package:authing_sdk/client.dart';
 import 'package:authing_sdk/result.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
+
+  // on mac, when running test, it will crash without this line
+  SharedPreferences.setMockInitialValues({});
+
   String pool = "60caaf41da89f1954875cee1";
   String appid = "60caaf41df670b771fd08937";
   Authing.init(pool, appid);
