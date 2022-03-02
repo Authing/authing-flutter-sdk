@@ -1,10 +1,9 @@
 library authing;
 
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
 
 class Authing {
-  static const String VERSION = "1.0.7";
+  static const String VERSION = "1.0.8";
 
   static String sUserPoolId = "";
   static String sAppId = "";
