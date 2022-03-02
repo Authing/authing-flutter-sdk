@@ -1,11 +1,13 @@
+import 'dart:convert';
+
+import 'package:authing_sdk/oidc/auth_request.dart';
+import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'authing.dart';
-import 'util.dart';
-import 'user.dart';
 import 'result.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'user.dart';
+import 'util.dart';
 
 class AuthClient {
   static const String keyToken = "authing_id_token";
@@ -55,14 +57,28 @@ class AuthClient {
   }
 
   /// login by account and password.
-  static Future<AuthResult> loginByAccount(
-      String account, String password) async {
+  static Future<AuthResult> loginByAccount(String account, String password,
+      {AuthRequest? authData}) async {
     var body =
         jsonEncode({'account': account, 'password': Util.encrypt(password)});
     final Result result = await post('/api/v2/login/account', body);
-    AuthResult authResult = AuthResult(result);
-    authResult.user = await createUser(result);
-    return authResult;
+
+    if (authData == null) {
+      AuthResult authResult = AuthResult(result);
+      authResult.user = await createUser(result);
+      return authResult;
+    } else {
+      AuthResult authResult = AuthResult(result);
+      authResult.user = await createUser(result);
+
+      if (authResult.code == 200) {
+        authData.token = authResult.user?.token;
+        print(authData.token);
+        return authResult;
+      } else {
+        return authResult;
+      }
+    }
   }
 
   /// login by phone number and an SMS verification code.
@@ -636,6 +652,9 @@ class AuthClient {
       } else {
         result.data = parsed;
       }
+    } else if (response.statusCode == 302) {
+      result.code = 200;
+      result.message = "";
     } else {
       result.code = response.statusCode;
       result.message = "network error";
