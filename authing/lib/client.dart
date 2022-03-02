@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:authing_sdk/oidc/auth_request.dart';
+import 'package:authing_sdk/oidc/oidc_client.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -72,9 +73,9 @@ class AuthClient {
       authResult.user = await createUser(result);
 
       if (authResult.code == 200) {
-        authData.token = authResult.user?.token;
-        print(authData.token);
-        return authResult;
+        authData.token = authResult.user?.token ?? "";
+
+        return OIDCClient.oidcInteraction(authData);
       } else {
         return authResult;
       }

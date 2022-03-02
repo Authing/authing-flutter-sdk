@@ -26,6 +26,6 @@ class AuthRequest {
     state = Util.getRandomString(10);
     authingLang = Util.getLangHeader();
     codeVerifier = Util.getRandomString(43);
-    codeChallenge = Util.generateCodeChallenge(codeVerifier ?? '');
+    codeChallenge = Util.generateCodeChallenge(codeVerifier);
   }
 }

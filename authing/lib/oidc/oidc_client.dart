@@ -80,10 +80,22 @@ class OIDCClient {
 
     var client = HttpClient();
     HttpClientRequest request = await client.postUrl(url);
-
     request.followRedirects = false;
+    String cookie = CookieManager().getCookie();
+    print(cookie);
+    request.headers.contentType = ContentType(
+        "application/x-www-form-urlencoded", "json",
+        charset: "charset=utf-8");
+    if (cookie.isNotEmpty) {
+      request.headers.add(HttpHeaders.cookieHeader, cookie);
+    }
+
+    request.write(body);
 
     HttpClientResponse response = await request.close();
+    print(response.statusCode);
+    final Result result = AuthClient.parseResponse(response);
+    AuthResult authResult = AuthResult(result);
 
     return authResult;
   }

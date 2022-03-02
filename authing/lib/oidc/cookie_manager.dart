@@ -8,8 +8,7 @@ class CookieManager {
   static final Map<String, Cookie> cookies = {};
 
   addCookies(HttpClientResponse response) {
-    List<String>? cookies = response.headers["set-cookie"];
-    print(cookies);
+    List<String>? cookies = response.headers["Set-Cookie"];
     if (cookies?.isEmpty == false) {
       cookies?.forEach((element) {
         List<String> data = element.split(";");
@@ -31,7 +30,6 @@ class CookieManager {
   String getCookie() {
     String cookieStr = "";
     cookies.forEach((key, value) {
-      print("--key, value--${key} ${value}");
       Cookie cookie = cookies[key] as Cookie;
       cookieStr += cookie.name + "=" + cookie.value + ";";
     });
