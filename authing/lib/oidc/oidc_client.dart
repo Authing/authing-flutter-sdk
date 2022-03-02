@@ -15,24 +15,24 @@ class OIDCClient {
     var url = Uri.parse('https://' +
         Authing.sHost +
         '/oidc/auth?_authing_lang=' +
-        authData.authingLang! +
+        authData.authingLang +
         "&app_id=" +
         Authing.sAppId +
         "&client_id=" +
         Authing.sAppId +
         "&nonce=" +
-        authData.nonce! +
+        authData.nonce +
         "&redirect_uri=" +
-        authData.redirectUrl! +
+        authData.redirectUrl +
         "&response_type=" +
-        authData.responseType! +
+        authData.responseType +
         "&scope=" +
-        authData.scope! +
+        authData.scope +
         "&prompt=consent" +
         "&state=" +
-        authData.state! +
+        authData.state +
         "&code_challenge=" +
-        authData.codeChallenge! +
+        authData.codeChallenge +
         "&code_challenge_method=" +
         'S256');
 
@@ -67,5 +67,24 @@ class OIDCClient {
     } else {
       return authResult;
     }
+  }
+
+  static Future<AuthResult> oidcInteraction(AuthRequest authData) async {
+    var url = Uri.parse('https://' +
+        Authing.sHost +
+        '/interaction/oidc/' +
+        authData.uuid +
+        "/login");
+
+    String body = "token=" + authData.token;
+
+    var client = HttpClient();
+    HttpClientRequest request = await client.postUrl(url);
+
+    request.followRedirects = false;
+
+    HttpClientResponse response = await request.close();
+
+    return authResult;
   }
 }

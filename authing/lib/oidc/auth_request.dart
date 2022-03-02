@@ -2,18 +2,18 @@ import 'package:authing_sdk/authing.dart';
 import 'package:authing_sdk/util.dart';
 
 class AuthRequest {
-  String? clientId;
-  String? finishLoginUrl;
-  String? nonce;
-  String? redirectUrl;
-  String? responseType;
-  String? scope;
-  String? state;
-  String? uuid;
-  String? authingLang;
-  String? codeVerifier;
-  String? codeChallenge;
-  String? token;
+  late String clientId;
+  late String finishLoginUrl;
+  late String nonce;
+  late String redirectUrl;
+  late String responseType;
+  late String scope;
+  late String state;
+  late String uuid;
+  late String authingLang;
+  late String codeVerifier;
+  late String codeChallenge;
+  late String token;
 
   createAuthRequest() {
     clientId = Authing.sAppId;
