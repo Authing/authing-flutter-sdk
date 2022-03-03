@@ -58,7 +58,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _appAuthLogin() async {
     var res = await OIDCClient.loginByAccount("test", "111111");
-    print(res.code);
+    print(res.user?.name);
+    print(res.user?.token);
+    print(res.user?.accessToken);
   }
 
   void _incrementCounter() {

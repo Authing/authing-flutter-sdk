@@ -28,4 +28,21 @@ class AuthRequest {
     codeVerifier = Util.getRandomString(43);
     codeChallenge = Util.generateCodeChallenge(codeVerifier);
   }
+
+  String getScopesAsConsentBody() {
+    List<String> scopes = scope.split(" ");
+    if (scope.isEmpty) {
+      return scope;
+    }
+
+    var buffer = StringBuffer();
+
+    scopes.forEach((element) {
+      buffer.write("consent[acceptedScopes][]=");
+      buffer.write(element);
+      buffer.write("&");
+    });
+
+    return buffer.toString();
+  }
 }

@@ -8,7 +8,7 @@ class CookieManager {
   static final Map<String, Cookie> cookies = {};
 
   addCookies(HttpClientResponse response) {
-    List<String>? cookies = response.headers["Set-Cookie"];
+    List<String>? cookies = response.headers["set-cookie"];
     if (cookies?.isEmpty == false) {
       cookies?.forEach((element) {
         List<String> data = element.split(";");

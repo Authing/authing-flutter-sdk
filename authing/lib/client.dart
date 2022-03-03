@@ -583,20 +583,23 @@ class AuthClient {
   }
 
   static Future<Result> get(String endpoint) {
-    return request("get", endpoint, null);
+    String url = 'https://' + Authing.sHost + endpoint;
+    return request("get", url, null);
   }
 
   static Future<Result> post(String endpoint, [String? body]) {
-    return request("post", endpoint, body);
+    String url = 'https://' + Authing.sHost + endpoint;
+    return request("post", url, body);
   }
 
   static Future<Result> delete(String endpoint, [String? body]) {
-    return request("delete", endpoint, body);
+    String url = 'https://' + Authing.sHost + endpoint;
+    return request("delete", url, body);
   }
 
-  static Future<Result> request(String method, String endpoint,
+  static Future<Result> request(String method, String uri,
       [String? body]) async {
-    var url = Uri.parse('https://' + Authing.sHost + endpoint);
+    var url = Uri.parse(uri);
     Map<String, String> headers = {
       "x-authing-userpool-id": Authing.sUserPoolId,
       "x-authing-app-id": Authing.sAppId,
@@ -653,9 +656,6 @@ class AuthClient {
       } else {
         result.data = parsed;
       }
-    } else if (response.statusCode == 302) {
-      result.code = 200;
-      result.message = "";
     } else {
       result.code = response.statusCode;
       result.message = "network error";

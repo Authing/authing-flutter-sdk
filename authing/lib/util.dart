@@ -38,6 +38,8 @@ class Util {
     var bytes = latin1.encode(codeVerifier);
     var digest = sha256.convert(bytes);
 
-    return base64.encode(digest.bytes);
+    String base64Str = Base64Encoder.urlSafe().convert(digest.bytes);
+
+    return base64Str.replaceAll("=", "");
   }
 }

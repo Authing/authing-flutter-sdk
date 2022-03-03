@@ -86,6 +86,19 @@ class User {
     return user;
   }
 
+  static User update(User user, Map map) {
+    if (map.containsKey("access_token")) {
+      user.accessToken = map["access_token"].toString();
+    }
+    if (map.containsKey("id_token")) {
+      user.token = map["id_token"].toString();
+    }
+    if (map.containsKey("refresh_token")) {
+      user.refreshToken = map["refresh_token"].toString();
+    }
+    return user;
+  }
+
   setCustomData(List data) {
     customData = data;
   }
