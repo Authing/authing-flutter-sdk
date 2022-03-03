@@ -79,6 +79,16 @@ class OIDCClient {
     }
   }
 
+  static Future<AuthResult> loginByPhoneCode(String phone, String code) async {
+    AuthResult authResult = await OIDCClient.prepareLogin();
+    if (authResult.code == 200) {
+      return AuthClient.loginByPhoneCode(phone, code,
+          authData: authResult.authData);
+    } else {
+      return authResult;
+    }
+  }
+
   static Future<AuthResult> oidcInteraction(AuthRequest authData) async {
     var url = Uri.parse('https://' +
         Authing.sHost +

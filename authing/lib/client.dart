@@ -83,12 +83,27 @@ class AuthClient {
   }
 
   /// login by phone number and an SMS verification code.
-  static Future<AuthResult> loginByPhoneCode(String phone, String code) async {
+  static Future<AuthResult> loginByPhoneCode(String phone, String code,
+      {AuthRequest? authData}) async {
     var body = jsonEncode({'phone': phone, 'code': code});
     final Result result = await post('/api/v2/login/phone-code', body);
-    AuthResult authResult = AuthResult(result);
-    authResult.user = await createUser(result);
-    return authResult;
+
+    if (authData == null) {
+      AuthResult authResult = AuthResult(result);
+      authResult.user = await createUser(result);
+      return authResult;
+    } else {
+      AuthResult authResult = AuthResult(result);
+      authResult.user = await createUser(result);
+
+      if (authResult.code == 200) {
+        authData.token = authResult.user?.token ?? "";
+
+        return OIDCClient.oidcInteraction(authData);
+      } else {
+        return authResult;
+      }
+    }
   }
 
   /// login by LDAP username and password.
