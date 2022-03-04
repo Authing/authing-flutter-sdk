@@ -1,3 +1,13 @@
+## 1.0.9
+
+* add OIDC account password login API
+* add OIDC phone code login API
+* add OIDC refresh accesstoken API
+
+## 1.0.8
+
+* fix SharedPreferences mock issue
+
 ## 1.0.7
 
 * update doc

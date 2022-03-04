@@ -132,6 +132,7 @@ class AuthClient {
     final Result result = await get('/api/v2/users/me');
     AuthResult authResult = AuthResult(result);
     authResult.user = await createUser(result);
+
     return authResult;
   }
 

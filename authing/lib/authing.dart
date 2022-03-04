@@ -1,14 +1,13 @@
 library authing;
 
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'client.dart';
 import 'config.dart';
 import 'result.dart';
 
 class Authing {
-  static const String VERSION = "1.0.7";
+  static const String VERSION = "1.0.9";
 
   static String sUserPoolId = "";
   static String sAppId = "";
@@ -21,7 +20,6 @@ class Authing {
   static Config config = Config();
 
   static void init(String userPoolId, String appId) {
-    SharedPreferences.setMockInitialValues({});
     sUserPoolId = userPoolId;
     sAppId = appId;
 

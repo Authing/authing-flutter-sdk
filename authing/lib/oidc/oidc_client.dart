@@ -276,7 +276,7 @@ class OIDCClient {
       result.data = jsonDecode(res);
       AuthResult authResult = AuthResult(result);
       authResult.user = await AuthClient.createUser(result);
-      authResult.user = User.update(authResult.user ?? User(), data);
+      authResult.user = await User.update(authResult.user ?? User(), data);
       return authResult;
     } else {
       result.code = response.statusCode;
@@ -300,7 +300,7 @@ class OIDCClient {
     AuthResult authResult = AuthResult(result);
 
     if (authResult.code == 200 || authResult.code == 201) {
-      authResult.user = User.update(user, result.data);
+      authResult.user = await User.update(user, result.data);
 
       return authResult;
     } else {

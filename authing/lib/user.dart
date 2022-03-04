@@ -1,3 +1,6 @@
+import 'package:authing_sdk/client.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 class User {
   late String id;
   late String phone;
@@ -86,7 +89,7 @@ class User {
     return user;
   }
 
-  static User update(User user, Map map) {
+  static Future<User> update(User user, Map map) async {
     if (map.containsKey("access_token")) {
       user.accessToken = map["access_token"].toString();
     }
@@ -96,6 +99,10 @@ class User {
     if (map.containsKey("refresh_token")) {
       user.refreshToken = map["refresh_token"].toString();
     }
+
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(AuthClient.keyToken, user.token);
+
     return user;
   }
 

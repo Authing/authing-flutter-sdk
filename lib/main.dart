@@ -1,6 +1,5 @@
 import 'package:authing_sdk/authing.dart';
 import 'package:authing_sdk/client.dart';
-import 'package:authing_sdk/oidc/oidc_client.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -15,7 +14,6 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     Authing.init("60caaf41da89f1954875cee1", "60caaf41df670b771fd08937");
     AuthClient.loginByAccount("test", "111111");
-
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
@@ -56,12 +54,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   String _counter = "";
 
-  void _appAuthLogin() async {
-    var res = await OIDCClient.loginByAccount("test", "111111");
-    print(res.user?.accessToken);
-    var result = await OIDCClient.getNewAccessTokenByRefreshToken(res.user!);
-    print(result.user?.accessToken);
-  }
+  void _appAuthLogin() async {}
 
   void _incrementCounter() {
     setState(() {
