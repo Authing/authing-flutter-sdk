@@ -1,8 +1,9 @@
-import 'package:flutter_test/flutter_test.dart';
-
 import 'package:authing_sdk/authing.dart';
 import 'package:authing_sdk/client.dart';
+import 'package:authing_sdk/oidc/oidc_client.dart';
 import 'package:authing_sdk/result.dart';
+import 'package:authing_sdk/user.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 // can run all case serially in one go
 
@@ -35,7 +36,8 @@ void main() {
   });
 
   test('register by username', () async {
-    AuthResult result = await AuthClient.registerByUserName("test1024", "111111");
+    AuthResult result =
+        await AuthClient.registerByUserName("test1024", "111111");
     expect(result.code, 200);
     expect(result.user?.username, "test1024");
     expect(result.user?.token != null, true);
@@ -44,7 +46,8 @@ void main() {
     expect(result2.code, 200);
     expect(result2.user?.username, "test1024");
 
-    AuthResult result3 = await AuthClient.registerByUserName("test1024", "111111");
+    AuthResult result3 =
+        await AuthClient.registerByUserName("test1024", "111111");
     expect(result3.code, 2026);
 
     Result result5 = await AuthClient.deleteAccount();
@@ -96,7 +99,8 @@ void main() {
     expect(result.code, 200);
     expect(result.user?.username, "ci");
 
-    AuthResult result2 = await AuthClient.getCustomData(AuthClient.currentUser!.id);
+    AuthResult result2 =
+        await AuthClient.getCustomData(AuthClient.currentUser!.id);
     expect(result2.code, 200);
     expect(AuthClient.currentUser?.customData[0]["key"], "org");
     expect(AuthClient.currentUser?.customData[0]["value"], "unit_test");
@@ -113,7 +117,8 @@ void main() {
     expect(AuthClient.currentUser?.customData[0]["value"], "unit_test");
 
     AuthClient.currentUser?.customData[0]["value"] = "hello";
-    AuthResult result3 = await AuthClient.setCustomData(AuthClient.currentUser!.customData);
+    AuthResult result3 =
+        await AuthClient.setCustomData(AuthClient.currentUser!.customData);
     expect(result3.code, 200);
     expect(AuthClient.currentUser?.customData[0]["value"], "hello");
 
@@ -126,15 +131,13 @@ void main() {
     expect(result.code, 200);
     expect(result.user?.username, "ci");
 
-    AuthResult result2 = await AuthClient.updateProfile({
-      "username":"hey",
-      "nickname":"musk"
-    });
+    AuthResult result2 =
+        await AuthClient.updateProfile({"username": "hey", "nickname": "musk"});
     expect(result2.code, 200);
     expect(result2.user?.username, "hey");
     expect(result2.user?.nickname, "musk");
 
-    AuthResult result3 = await AuthClient.updateProfile({"username":"ci"});
+    AuthResult result3 = await AuthClient.updateProfile({"username": "ci"});
     expect(result3.code, 200);
     expect(result3.user?.username, "ci");
   });
@@ -266,5 +269,40 @@ void main() {
 
     r = await AuthClient.mfaCheck("abc@gmail.com", null);
     expect(r, true);
+  });
+
+  test('oidcLoginByAccount', () async {
+    Authing.init("60caaf41da89f1954875cee1", "60caaf41df670b771fd08937");
+
+    var res = await OIDCClient.loginByAccount("test", "111111");
+
+    expect(res.code, 200);
+    expect(res.user?.accessToken != null, true);
+    expect(res.user?.refreshToken != null, true);
+  });
+
+  test('oidcLoginByPhoneCode', () async {
+    String phone = "+86xxx";
+
+    Authing.init("60caaf41da89f1954875cee1", "60caaf41df670b771fd08937");
+
+    var res = await OIDCClient.loginByPhoneCode(phone, "1234");
+    expect(res.code, 200);
+    expect(res.user?.accessToken != null, true);
+    expect(res.user?.refreshToken != null, true);
+  });
+
+  test('getNewAccessTokenByRefreshToken', () async {
+    Authing.init("60caaf41da89f1954875cee1", "60caaf41df670b771fd08937");
+
+    var res = await OIDCClient.loginByAccount("test", "111111");
+    expect(res.code, 200);
+    expect(res.user?.accessToken != null, true);
+    expect(res.user?.refreshToken != null, true);
+
+    var result2 =
+        await OIDCClient.getNewAccessTokenByRefreshToken(res.user ?? User());
+    expect(result2.code, 200);
+    expect(result2.user?.accessToken != null, true);
   });
 }

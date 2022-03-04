@@ -210,11 +210,19 @@ class OIDCClient {
         "&redirect_uri=" +
         Uri.encodeComponent(authRequest.redirectUrl);
 
-    var authResult = await oauthRequest("post", url, body);
-    return authResult;
+    Result result = await oauthRequest("post", url, body);
+
+    AuthResult authResult = AuthResult(result);
+
+    if (authResult.code == 200 || authResult.code == 201) {
+      authResult.user = await AuthClient.createUser(result);
+      return getUserInfoByAccessToken(authResult, result.data);
+    } else {
+      return authResult;
+    }
   }
 
-  static Future<AuthResult> oauthRequest(
+  static Future<Result> oauthRequest(
       String method, String uri, String body) async {
     var url = Uri.parse(uri);
     var client = HttpClient();
@@ -241,14 +249,11 @@ class OIDCClient {
       result.code = 200;
       result.message = "success";
       result.data = jsonDecode(res);
-      AuthResult authResult = AuthResult(result);
-      authResult.user = await AuthClient.createUser(result);
-      return getUserInfoByAccessToken(authResult, jsonDecode(res));
+      return result;
     } else {
       result.code = response.statusCode;
       result.message = "authRequest failed. " + res;
-      AuthResult authResult = AuthResult(result);
-      return authResult;
+      return result;
     }
   }
 
@@ -277,6 +282,28 @@ class OIDCClient {
       result.code = response.statusCode;
       result.message = "getUserInfoByAccessToken failed. " + res;
       AuthResult authResult = AuthResult(result);
+      return authResult;
+    }
+  }
+
+  static Future<AuthResult> getNewAccessTokenByRefreshToken(User user) async {
+    String url =
+        "https://" + Authing.config.identifier + ".authing.cn" + "/oidc/token";
+    String body = "client_id=" +
+        Authing.sAppId +
+        "&grant_type=refresh_token" +
+        "&refresh_token=" +
+        (user.refreshToken ?? "");
+
+    Result result = await oauthRequest("post", url, body);
+
+    AuthResult authResult = AuthResult(result);
+
+    if (authResult.code == 200 || authResult.code == 201) {
+      authResult.user = User.update(user, result.data);
+
+      return authResult;
+    } else {
       return authResult;
     }
   }
