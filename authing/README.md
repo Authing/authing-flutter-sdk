@@ -101,7 +101,7 @@ Contact Authing sales if you have any questions.
 
 * [Login by OIDC authorization code](#auth-by-code)
 * [OIDC Login by account and password](#oidc-login-by-account-and-password)
-* [OIDC Login by phone code](#OIDC-Login by phone code)
+* [OIDC Login by phone code](#iodc-login-by-phone-code)
 * [Build authorize URL](#build-authorize-url)
 * [Token Change user information](#token-change-userinformation)
 * [Refresh Access Token](#refresh-access-token)
@@ -1345,7 +1345,7 @@ static Future<AuthResult> loginByPhoneCode(String phone, String code) async
 **example**
 
 ```dart
-AuthResult result = await OIDCClient.loginByPhoneCode("13012345678", "1234");
+AuthResult result = await OIDCClient.loginByPhoneCode("phone", "code");
 User user = result.user; // get user info
 ```
 
@@ -1387,7 +1387,7 @@ static Future<AuthResult> getUserInfoByAccessToken(String accessToken, [Map? dat
 
 **params**
 
-* `accessToken` Access token
+* *accessToken* Access token
 
 **example**
 
@@ -1409,7 +1409,7 @@ static Future<AuthResult> getNewAccessTokenByRefreshToken(String refreshToken) a
 
 **params**
 
-* `refreshToken` Refresh Token
+* *refreshToken*  Refresh Token
 
 **example**
 
