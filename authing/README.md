@@ -101,7 +101,7 @@ Contact Authing sales if you have any questions.
 
 * [Login by OIDC authorization code](#auth-by-code)
 * [OIDC Login by account and password](#oidc-login-by-account-and-password)
-* [OIDC Login by phone code](#iodc-login-by-phone-code)
+* [OIDC Login by phone code](#oidc-login-by-phone-code)
 * [Build authorize URL](#build-authorize-url)
 * [Token Change user information](#token-change-userinformation)
 * [Refresh Access Token](#refresh-access-token)
