@@ -1,3 +1,7 @@
+## 1.1.0
+
+* update doc
+
 ## 1.0.9
 
 * add OIDC account password login API
