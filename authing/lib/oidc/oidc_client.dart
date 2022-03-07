@@ -11,7 +11,32 @@ import '../result.dart';
 import 'cookie_manager.dart';
 
 class OIDCClient {
-  /// auth by OIDC code
+  static Future<String> buildAuthorizeUrl(AuthRequest authRequest) async {
+    return 'https://' +
+        Util.getHost(Authing.config) +
+        '/oidc/auth?_authing_lang=' +
+        authRequest.authingLang +
+        "&app_id=" +
+        Authing.sAppId +
+        "&client_id=" +
+        Authing.sAppId +
+        "&nonce=" +
+        authRequest.nonce +
+        "&redirect_uri=" +
+        authRequest.redirectUrl +
+        "&response_type=" +
+        authRequest.responseType +
+        "&scope=" +
+        authRequest.scope +
+        "&prompt=consent" +
+        "&state=" +
+        authRequest.state +
+        "&code_challenge=" +
+        authRequest.codeChallenge +
+        "&code_challenge_method=" +
+        'S256';
+  }
+
   static Future<AuthResult> prepareLogin() async {
     AuthRequest authData = AuthRequest();
     authData.createAuthRequest();
@@ -20,7 +45,7 @@ class OIDCClient {
     }
 
     var url = Uri.parse('https://' +
-        (Authing.config.identifier + ".authing.cn") +
+        Util.getHost(Authing.config) +
         '/oidc/auth?_authing_lang=' +
         authData.authingLang +
         "&app_id=" +
@@ -194,8 +219,7 @@ class OIDCClient {
 
   static Future<AuthResult> authByCode(
       String code, AuthRequest authRequest) async {
-    String url =
-        "https://" + Authing.config.identifier + ".authing.cn" + "/oidc/token";
+    String url = "https://" + Util.getHost(Authing.config) + "/oidc/token";
     String body = "client_id=" +
         Authing.sAppId +
         "&grant_type=authorization_code" +
@@ -216,7 +240,8 @@ class OIDCClient {
 
     if (authResult.code == 200 || authResult.code == 201) {
       authResult.user = await AuthClient.createUser(result);
-      return getUserInfoByAccessToken(authResult, result.data);
+      return getUserInfoByAccessToken(
+          authResult.user?.accessToken ?? "", result.data);
     } else {
       return authResult;
     }
@@ -257,15 +282,13 @@ class OIDCClient {
     }
   }
 
-  static Future<AuthResult> getUserInfoByAccessToken(
-      AuthResult authData, Map data) async {
-    String url =
-        "https://" + Authing.config.identifier + ".authing.cn" + "/oidc/me";
+  static Future<AuthResult> getUserInfoByAccessToken(String accessToken,
+      [Map? data]) async {
+    String url = "https://" + Util.getHost(Authing.config) + "/oidc/me";
     var client = HttpClient();
     HttpClientRequest request = await client.getUrl(Uri.parse(url));
 
-    request.headers
-        .set("Authorization", "Bearer " + (authData.user?.accessToken ?? ""));
+    request.headers.set("Authorization", "Bearer " + accessToken);
 
     HttpClientResponse response = await request.close();
     var res = await response.transform(utf8.decoder).join();
@@ -276,7 +299,8 @@ class OIDCClient {
       result.data = jsonDecode(res);
       AuthResult authResult = AuthResult(result);
       authResult.user = await AuthClient.createUser(result);
-      authResult.user = await User.update(authResult.user ?? User(), data);
+      authResult.user =
+          await User.update(authResult.user ?? User(), data ?? {});
       return authResult;
     } else {
       result.code = response.statusCode;
@@ -286,21 +310,21 @@ class OIDCClient {
     }
   }
 
-  static Future<AuthResult> getNewAccessTokenByRefreshToken(User user) async {
-    String url =
-        "https://" + Authing.config.identifier + ".authing.cn" + "/oidc/token";
+  static Future<AuthResult> getNewAccessTokenByRefreshToken(
+      String refreshToken) async {
+    String url = "https://" + Util.getHost(Authing.config) + "/oidc/token";
     String body = "client_id=" +
         Authing.sAppId +
         "&grant_type=refresh_token" +
         "&refresh_token=" +
-        (user.refreshToken ?? "");
+        refreshToken;
 
     Result result = await oauthRequest("post", url, body);
 
     AuthResult authResult = AuthResult(result);
 
     if (authResult.code == 200 || authResult.code == 201) {
-      authResult.user = await User.update(user, result.data);
+      authResult.user = User.create(result.data);
 
       return authResult;
     } else {

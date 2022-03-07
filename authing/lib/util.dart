@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:math';
 import 'dart:ui' as ui;
 
+import 'package:authing_sdk/config.dart';
 import 'package:crypto/crypto.dart';
 import 'package:encrypt/encrypt.dart';
 import 'package:pointycastle/asymmetric/api.dart';
@@ -41,5 +42,33 @@ class Util {
     String base64Str = Base64Encoder.urlSafe().convert(digest.bytes);
 
     return base64Str.replaceAll("=", "");
+  }
+
+  static bool isIP(String? str, [/*<String | int>*/ version]) {
+    RegExp _ipv4Maybe =
+        RegExp(r'^(\d?\d?\d)\.(\d?\d?\d)\.(\d?\d?\d)\.(\d?\d?\d)$');
+    RegExp _ipv6 =
+        RegExp(r'^::|^::1|^([a-fA-F0-9]{1,4}::?){1,7}([a-fA-F0-9]{1,4})$');
+
+    version = version.toString();
+    if (version == 'null') {
+      return isIP(str, 4) || isIP(str, 6);
+    } else if (version == '4') {
+      if (!_ipv4Maybe.hasMatch(str!)) {
+        return false;
+      }
+      var parts = str.split('.');
+      parts.sort((a, b) => int.parse(a) - int.parse(b));
+      return int.parse(parts[3]) <= 255;
+    }
+    return version == '6' && _ipv6.hasMatch(str!);
+  }
+
+  static String getHost(Config config) {
+    if (Util.isIP(Authing.sHost)) {
+      return Authing.sHost;
+    } else {
+      return config.identifier + ".authing.cn";
+    }
   }
 }
