@@ -11,6 +11,7 @@ import '../result.dart';
 import 'cookie_manager.dart';
 
 class OIDCClient {
+  /// Build authorize URL
   static Future<String> buildAuthorizeUrl(AuthRequest authRequest) async {
     return 'https://' +
         Util.getHost(Authing.config) +
@@ -37,6 +38,7 @@ class OIDCClient {
         'S256';
   }
 
+  /// OIDC prepare
   static Future<AuthResult> prepareLogin() async {
     AuthRequest authData = AuthRequest();
     authData.createAuthRequest();
@@ -93,6 +95,7 @@ class OIDCClient {
     }
   }
 
+  /// OIDC Login by account and password
   static Future<AuthResult> loginByAccount(
       String account, String password) async {
     AuthResult authResult = await OIDCClient.prepareLogin();
@@ -104,6 +107,7 @@ class OIDCClient {
     }
   }
 
+  ///OIDC Login by phone code #
   static Future<AuthResult> loginByPhoneCode(String phone, String code) async {
     AuthResult authResult = await OIDCClient.prepareLogin();
     if (authResult.code == 200) {
@@ -217,6 +221,7 @@ class OIDCClient {
     }
   }
 
+  ///Auth by code #
   static Future<AuthResult> authByCode(
       String code, AuthRequest authRequest) async {
     String url = "https://" + Util.getHost(Authing.config) + "/oidc/token";
@@ -282,6 +287,7 @@ class OIDCClient {
     }
   }
 
+  ///Token Change user information
   static Future<AuthResult> getUserInfoByAccessToken(String accessToken,
       [Map? data]) async {
     String url = "https://" + Util.getHost(Authing.config) + "/oidc/me";
@@ -310,6 +316,7 @@ class OIDCClient {
     }
   }
 
+  ///Refresh Access Token
   static Future<AuthResult> getNewAccessTokenByRefreshToken(
       String refreshToken) async {
     String url = "https://" + Util.getHost(Authing.config) + "/oidc/token";
