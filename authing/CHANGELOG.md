@@ -1,3 +1,7 @@
+## 1.1.3
+
+* fix OIDC issue
+
 ## 1.1.2
 
 * update doc
