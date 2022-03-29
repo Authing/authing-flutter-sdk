@@ -42,6 +42,9 @@ class User {
   static User create(Map map) {
     User user = User();
     user.id = map["id"].toString();
+    if (user.id.isEmpty) {
+      user.id = map["sub"].toString();
+    }
     user.phone = map["phone"].toString();
     user.email = map["email"].toString();
     user.token = map["token"].toString();
