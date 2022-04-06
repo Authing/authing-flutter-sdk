@@ -43,9 +43,6 @@ class WebExampleState extends State<WebExample> {
         },
         onWebResourceError: (error) {},
         navigationDelegate: (NavigationRequest request) {
-          if (request.url.contains(widget.authData.redirectUrl)) {
-            return NavigationDecision.prevent;
-          }
           return NavigationDecision.navigate;
         },
       ),
