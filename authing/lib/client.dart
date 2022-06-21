@@ -463,7 +463,7 @@ class AuthClient {
   static Future<AuthResult> loginByApple(String code) async {
     var body = jsonEncode({'code': code});
     final Result result = await post(
-        'connection/social/apple/' +
+        '/connection/social/apple/' +
             Authing.sUserPoolId +
             '/callback?app_id=' +
             Authing.sAppId,
