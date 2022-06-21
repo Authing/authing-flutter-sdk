@@ -1,3 +1,22 @@
+## 1.1.4
+
+* fix loginByApple url mistake
+## 1.1.3
+
+* fix OIDC issue
+
+## 1.1.2
+
+* update doc
+
+## 1.1.1
+
+* update doc
+
+## 1.1.0
+
+* update doc
+
 ## 1.0.9
 
 * add OIDC account password login API

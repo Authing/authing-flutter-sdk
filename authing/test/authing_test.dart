@@ -1,12 +1,10 @@
-import 'package:flutter_test/flutter_test.dart';
-
 import 'package:authing_sdk/authing.dart';
 import 'package:authing_sdk/client.dart';
 import 'package:authing_sdk/result.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
-
   // on mac, when running test, it will crash without this line
   SharedPreferences.setMockInitialValues({});
 
@@ -18,7 +16,8 @@ void main() {
     // change to your testing phone number. fill code after receiving the SMS
     // NOTE: add country code prefix
     String phone = "+86xxx";
-    AuthResult result = await AuthClient.registerByPhoneCode(phone, "9314", "111111");
+    AuthResult result =
+        await AuthClient.registerByPhoneCode(phone, "9314", "111111");
     expect(result.code, 200);
     expect(result.user?.phone, phone);
     expect(result.user?.token != null, true);
@@ -60,7 +59,8 @@ void main() {
 
   test('resetPasswordByPhoneCode', () async {
     String phone = "136";
-    AuthResult result = await AuthClient.resetPasswordByPhoneCode(phone, "2613", "111111");
+    AuthResult result =
+        await AuthClient.resetPasswordByPhoneCode(phone, "2613", "111111");
     expect(result.code, 200);
 
     AuthResult result2 = await AuthClient.loginByAccount(phone, "111111");
@@ -70,7 +70,8 @@ void main() {
 
   test('resetPasswordByEmailCode', () async {
     String email = "x@gmail.com";
-    AuthResult result = await AuthClient.resetPasswordByEmailCode(email, "6898", "111111");
+    AuthResult result =
+        await AuthClient.resetPasswordByEmailCode(email, "6898", "111111");
     expect(result.code, 200);
 
     AuthResult result2 = await AuthClient.loginByAccount(email, "111111");
@@ -161,12 +162,14 @@ void main() {
   });
 
   test('loginByWechat', () async {
-    AuthResult result = await AuthClient.loginByWechat("61d7bba378b4119bcb12590f", "x");
+    AuthResult result =
+        await AuthClient.loginByWechat("61d7bba378b4119bcb12590f", "x");
     expect(result.code, 200);
   });
 
   test('loginByAlipay', () async {
-    AuthResult result = await AuthClient.loginByAlipay("6184f4de0b6ae7d51ec98d5f", "x");
+    AuthResult result =
+        await AuthClient.loginByAlipay("6184f4de0b6ae7d51ec98d5f", "x");
     expect(result.code, 200);
   });
 
@@ -183,7 +186,8 @@ void main() {
 
   test('mfaVerifyByEmail', () async {
     Authing.init(pool, "61c173ada0e3aec651b1a1d1");
-    AuthResult result = await AuthClient.mfaVerifyByEmail("1@gmail.com", "1234");
+    AuthResult result =
+        await AuthClient.mfaVerifyByEmail("1@gmail.com", "1234");
     expect(result.code, 200);
   });
 
@@ -200,7 +204,8 @@ void main() {
   });
 
   test('authByCode', () async {
-    AuthResult result = await AuthClient.authByCode("P6FENDfGSH72PxgJQk17FoGMWY3oL1G0D2PQ1AfyDeo",
+    AuthResult result = await AuthClient.authByCode(
+        "P6FENDfGSH72PxgJQk17FoGMWY3oL1G0D2PQ1AfyDeo",
         "fu6IivbcEb7DFCytjLmoAICRtFLbG9zkk5QdDbNd0gG",
         "https://guard.authing/redirect");
     expect(result.code, 200);

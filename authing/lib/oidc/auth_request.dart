@@ -15,7 +15,7 @@ class AuthRequest {
   late String codeChallenge;
   late String token;
 
-  createAuthRequest() {
+  void createAuthRequest() {
     clientId = Authing.sAppId;
     nonce = Util.getRandomString(10);
     redirectUrl =

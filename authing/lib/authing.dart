@@ -7,7 +7,7 @@ import 'config.dart';
 import 'result.dart';
 
 class Authing {
-  static const String VERSION = "1.0.9";
+  static const String VERSION = "1.1.4";
 
   static String sUserPoolId = "";
   static String sAppId = "";
@@ -39,8 +39,6 @@ class Authing {
   }
 
   static void requestPublicConfig() async {
-    http.Response? response;
-
     String url = "https://" +
         "console" +
         sHost +
