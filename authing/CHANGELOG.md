@@ -1,3 +1,7 @@
+## 1.1.5
+
+* Support English
+
 ## 1.1.4
 
 * fix loginByApple url mistake
