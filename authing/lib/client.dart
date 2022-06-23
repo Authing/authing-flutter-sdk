@@ -621,7 +621,8 @@ class AuthClient {
       "x-authing-app-id": Authing.sAppId,
       "x-authing-request-from": "sdk-flutter",
       "x-authing-sdk-version": Authing.VERSION,
-      "content-type": "application/json"
+      "content-type": "application/json",
+      "x-authing-lang": Util.getLangHeader()
     };
     if (currentUser != null) {
       if (currentUser!.mfaToken != null) {

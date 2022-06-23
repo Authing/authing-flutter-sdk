@@ -1,6 +1,7 @@
 ## 1.1.4
 
 * fix loginByApple url mistake
+
 ## 1.1.3
 
 * fix OIDC issue
