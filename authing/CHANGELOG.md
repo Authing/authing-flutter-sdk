@@ -1,3 +1,7 @@
+## 1.1.6
+
+* fix jsonencode issue
+
 ## 1.1.5
 
 * Support English
