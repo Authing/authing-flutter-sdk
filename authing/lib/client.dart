@@ -467,7 +467,7 @@ class AuthClient {
             Authing.sUserPoolId +
             '/callback?app_id=' +
             Authing.sAppId,
-        jsonEncode(body));
+        body);
     AuthResult authResult = AuthResult(result);
     authResult.user = await createUser(result);
     return authResult;
