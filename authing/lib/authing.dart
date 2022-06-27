@@ -19,11 +19,11 @@ class Authing {
       "https://console.authing.cn/console/get-started/" + Authing.sAppId;
   static Config config = Config();
 
-  static void init(String userPoolId, String appId) {
+  static Future<void> init(String userPoolId, String appId) async {
     sUserPoolId = userPoolId;
     sAppId = appId;
 
-    requestPublicConfig();
+    await requestPublicConfig();
 
     http.get(Uri.parse(
         "https://developer-beta.authing.cn/stats/sdk-trace/?appid=" +
@@ -38,7 +38,7 @@ class Authing {
     sPublicKey = publicKey;
   }
 
-  static void requestPublicConfig() async {
+  static Future<void> requestPublicConfig() async {
     String url = "https://" +
         "console" +
         sHost +
