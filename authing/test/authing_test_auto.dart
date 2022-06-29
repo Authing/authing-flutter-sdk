@@ -276,7 +276,7 @@ void main() {
   });
 
   test('oidcLoginByAccount', () async {
-    Authing.init("60caaf41da89f1954875cee1", "60caaf41df670b771fd08937");
+    await Authing.init("60caaf41da89f1954875cee1", "60caaf41df670b771fd08937");
 
     var res = await OIDCClient.loginByAccount("test", "111111");
 
@@ -288,7 +288,7 @@ void main() {
   test('oidcLoginByPhoneCode', () async {
     String phone = "+86xxx";
 
-    Authing.init("60caaf41da89f1954875cee1", "60caaf41df670b771fd08937");
+    await Authing.init("60caaf41da89f1954875cee1", "60caaf41df670b771fd08937");
 
     var res = await OIDCClient.loginByPhoneCode(phone, "1234");
     expect(res.code, 200);
@@ -305,7 +305,7 @@ void main() {
   });
 
   test('getNewAccessTokenByRefreshToken', () async {
-    Authing.init("60caaf41da89f1954875cee1", "60caaf41df670b771fd08937");
+    await Authing.init("60caaf41da89f1954875cee1", "60caaf41df670b771fd08937");
 
     var result2 =
         await OIDCClient.getNewAccessTokenByRefreshToken("refreshToken");
@@ -314,7 +314,7 @@ void main() {
   });
 
   test('getUserInfoByAccessToken', () async {
-    Authing.init("60caaf41da89f1954875cee1", "60caaf41df670b771fd08937");
+    await Authing.init("60caaf41da89f1954875cee1", "60caaf41df670b771fd08937");
 
     var result2 = await OIDCClient.getUserInfoByAccessToken("accessToken");
     expect(result2.code, 200);
