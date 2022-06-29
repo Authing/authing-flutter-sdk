@@ -1,3 +1,7 @@
+## 1.1.7
+
+* fix Initialize the sync issue
+
 ## 1.1.6
 
 * fix jsonencode issue
