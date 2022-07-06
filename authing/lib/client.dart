@@ -75,7 +75,7 @@ class AuthClient {
       if (authResult.code == 200) {
         authData.token = authResult.user?.token ?? "";
 
-        return OIDCClient.oidcInteraction(authData);
+        return OIDCClient.authByToken(authData.token, authData);
       } else {
         return authResult;
       }
@@ -99,7 +99,7 @@ class AuthClient {
       if (authResult.code == 200) {
         authData.token = authResult.user?.token ?? "";
 
-        return OIDCClient.oidcInteraction(authData);
+        return OIDCClient.authByToken(authData.token, authData);
       } else {
         return authResult;
       }

@@ -2,6 +2,7 @@ import 'package:authing_sdk/authing.dart';
 import 'package:authing_sdk/client.dart';
 import 'package:authing_sdk/oidc/auth_request.dart';
 import 'package:authing_sdk/oidc/oidc_client.dart';
+import 'package:authing_sdk/result.dart';
 import 'package:flutter/material.dart';
 
 import 'webview.dart';
@@ -68,8 +69,10 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               const SizedBox(height: 12),
               MaterialButton(
-                onPressed: () {
-                  AuthClient.logout();
+                onPressed: () async {
+                  AuthResult result = await AuthClient.logout();
+                  print(result.code);
+                  print(result.message);
                 },
                 child: const Text(
                   'logout',

@@ -118,109 +118,6 @@ class OIDCClient {
     }
   }
 
-  static Future<AuthResult> oidcInteraction(AuthRequest authData) async {
-    var url = Uri.parse('https://' +
-        Authing.sHost +
-        '/interaction/oidc/' +
-        authData.uuid +
-        "/login");
-
-    var client = HttpClient();
-    HttpClientRequest request = await client.postUrl(url);
-    request.followRedirects = false;
-    String cookie = CookieManager().getCookie();
-    request.headers.set('content-type', 'application/json');
-    if (cookie.isNotEmpty) {
-      request.headers.set(HttpHeaders.cookieHeader, cookie);
-    }
-    Map data = {'token': authData.token};
-    request.add(utf8.encode(json.encode(data)));
-
-    HttpClientResponse response = await request.close();
-    var res = await response.transform(utf8.decoder).join();
-
-    Result result = Result();
-    if (response.statusCode == 302) {
-      CookieManager().addCookies(response);
-      String location = response.headers["location"]?.first ?? "";
-      return oidcLogin(location, authData);
-    } else {
-      result.code = response.statusCode;
-      result.message = "oidcInteraction failed. " + res;
-      AuthResult authResult = AuthResult(result);
-      return authResult;
-    }
-  }
-
-  static Future<AuthResult> oidcLogin(String url, AuthRequest authData) async {
-    var client = HttpClient();
-    HttpClientRequest request = await client.getUrl(Uri.parse(url));
-    request.followRedirects = false;
-    String cookie = CookieManager().getCookie();
-    if (cookie.isNotEmpty) {
-      request.headers.set(HttpHeaders.cookieHeader, cookie);
-    }
-
-    HttpClientResponse response = await request.close();
-    var res = await response.transform(utf8.decoder).join();
-    Result result = Result();
-    if (response.statusCode == 302) {
-      CookieManager().addCookies(response);
-      String location = response.headers["location"]?.first ?? "";
-      Uri uri = Uri.parse(location);
-      String authCode = uri.queryParameters["code"] ?? "";
-      if (authCode.isNotEmpty == true) {
-        return authByCode(authCode, authData);
-      } else if (uri.pathSegments.last == "authz") {
-        url = request.uri.scheme +
-            "://" +
-            request.uri.host +
-            "/interaction/oidc/" +
-            authData.uuid +
-            "/confirm";
-        return oidcInteractionScopeConfirm(url, authData);
-      } else {
-        url = request.uri.scheme + "://" + request.uri.host + location;
-        return oidcLogin(url, authData);
-      }
-    } else {
-      result.code = response.statusCode;
-      result.message = "oidcLogin failed. " + res;
-      AuthResult authResult = AuthResult(result);
-      return authResult;
-    }
-  }
-
-  static Future<AuthResult> oidcInteractionScopeConfirm(
-      String url, AuthRequest authData) async {
-    var client = HttpClient();
-    HttpClientRequest request = await client.postUrl(Uri.parse(url));
-    request.followRedirects = false;
-    String cookie = CookieManager().getCookie();
-    request.headers.set('content-type', 'application/x-www-form-urlencoded');
-    if (cookie.isNotEmpty) {
-      request.headers.set(HttpHeaders.cookieHeader, cookie);
-    }
-
-    String body = authData.getScopesAsConsentBody();
-    request.add(utf8.encode(body));
-
-    HttpClientResponse response = await request.close();
-    var res = await response.transform(utf8.decoder).join();
-
-    Result result = Result();
-    if (response.statusCode == 302) {
-      CookieManager().addCookies(response);
-      String location = response.headers["location"]?.first ?? "";
-      return oidcLogin(location, authData);
-    } else {
-      result.code = response.statusCode;
-      result.message = "ooidcInteraction failed. " + res;
-      AuthResult authResult = AuthResult(result);
-      return authResult;
-    }
-  }
-
   ///Auth by code #
   static Future<AuthResult> authByCode(
       String code, AuthRequest authRequest) async {
@@ -230,6 +127,37 @@ class OIDCClient {
         "&grant_type=authorization_code" +
         "&code=" +
         code +
+        "&scope=" +
+        authRequest.scope +
+        "&prompt=" +
+        "consent" +
+        "&code_verifier=" +
+        authRequest.codeVerifier +
+        "&redirect_uri=" +
+        Uri.encodeComponent(authRequest.redirectUrl);
+
+    Result result = await oauthRequest("post", url, body);
+
+    AuthResult authResult = AuthResult(result);
+
+    if (authResult.code == 200 || authResult.code == 201) {
+      authResult.user = await AuthClient.createUser(result);
+      return getUserInfoByAccessToken(
+          authResult.user?.accessToken ?? "", result.data);
+    } else {
+      return authResult;
+    }
+  }
+
+  ///Auth by Authing token
+  static Future<AuthResult> authByToken(
+      String token, AuthRequest authRequest) async {
+    String url = "https://" + Util.getHost(Authing.config) + "/oidc/token";
+    String body = "client_id=" +
+        Authing.sAppId +
+        "&grant_type=http:authing.cn/oidc/grant_type/authing_token" +
+        "&token=" +
+        token +
         "&scope=" +
         authRequest.scope +
         "&prompt=" +
