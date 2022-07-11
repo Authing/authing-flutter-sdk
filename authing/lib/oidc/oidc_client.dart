@@ -155,7 +155,7 @@ class OIDCClient {
     String url = "https://" + Util.getHost(Authing.config) + "/oidc/token";
     String body = "client_id=" +
         Authing.sAppId +
-        "&grant_type=http:authing.cn/oidc/grant_type/authing_token" +
+        "&grant_type=http://authing.cn/oidc/grant_type/authing_token" +
         "&token=" +
         token +
         "&scope=" +
