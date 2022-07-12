@@ -7,7 +7,7 @@ import 'config.dart';
 import 'result.dart';
 
 class Authing {
-  static const String VERSION = "1.1.7";
+  static const String VERSION = "1.1.8";
 
   static String sUserPoolId = "";
   static String sAppId = "";

@@ -1,3 +1,7 @@
+## 1.1.8
+
+* bug fixes, and new features
+
 ## 1.1.7
 
 * fix Initialize the sync issue
