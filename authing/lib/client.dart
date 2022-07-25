@@ -62,7 +62,8 @@ class AuthClient {
 
   /// register a new user by phone number and an SMS verification code.
   static Future<AuthResult> registerByPhoneCode(
-      String phone, String code, String password) async {
+      String phone, String code, String password,
+      {AuthRequest? authData}) async {
     var body = jsonEncode({
       'phone': phone,
       'code': code,
@@ -72,7 +73,16 @@ class AuthClient {
     final Result result = await post('/api/v2/register/phone-code', body);
     AuthResult authResult = AuthResult(result);
     authResult.user = await createUser(result);
-    return authResult;
+    if (authData == null) {
+      return authResult;
+    } else {
+      if (authResult.code == 200) {
+        authData.token = authResult.user?.token ?? "";
+        return OIDCClient.authByToken(authData.token, authData);
+      } else {
+        return authResult;
+      }
+    }
   }
 
   /// login by account and password.

@@ -119,6 +119,18 @@ class OIDCClient {
     }
   }
 
+  /// OIDC register a new user by phone number and an SMS verification code.
+  static Future<AuthResult> registerByPhoneCode(
+      String phone, String code, String password) async {
+    AuthResult authResult = await OIDCClient.prepareLogin();
+    if (authResult.code == 200) {
+      return AuthClient.registerByPhoneCode(phone, code, password,
+          authData: authResult.authData);
+    } else {
+      return authResult;
+    }
+  }
+
   /// OIDC Login by account and password
   static Future<AuthResult> loginByAccount(
       String account, String password) async {
