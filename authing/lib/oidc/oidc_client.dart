@@ -95,6 +95,30 @@ class OIDCClient {
     }
   }
 
+  /// OIDC register a new user by email address and a password.
+  static Future<AuthResult> registerByEmail(
+      String email, String password) async {
+    AuthResult authResult = await OIDCClient.prepareLogin();
+    if (authResult.code == 200) {
+      return AuthClient.registerByEmail(email, password,
+          authData: authResult.authData);
+    } else {
+      return authResult;
+    }
+  }
+
+  /// OIDC register a new user by username and a password.
+  static Future<AuthResult> registerByUserName(
+      String username, String password) async {
+    AuthResult authResult = await OIDCClient.prepareLogin();
+    if (authResult.code == 200) {
+      return AuthClient.registerByUserName(username, password,
+          authData: authResult.authData);
+    } else {
+      return authResult;
+    }
+  }
+
   /// OIDC Login by account and password
   static Future<AuthResult> loginByAccount(
       String account, String password) async {

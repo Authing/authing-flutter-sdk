@@ -15,8 +15,8 @@ class AuthClient {
   static User? currentUser;
 
   /// register a new user by email address and a password.
-  static Future<AuthResult> registerByEmail(
-      String email, String password) async {
+  static Future<AuthResult> registerByEmail(String email, String password,
+      {AuthRequest? authData}) async {
     var body = jsonEncode({
       'email': email,
       'password': Util.encrypt(password),
@@ -25,12 +25,21 @@ class AuthClient {
     final Result result = await post('/api/v2/register/email', body);
     AuthResult authResult = AuthResult(result);
     authResult.user = await createUser(result);
-    return authResult;
+    if (authData == null) {
+      return authResult;
+    } else {
+      if (authResult.code == 200) {
+        authData.token = authResult.user?.token ?? "";
+        return OIDCClient.authByToken(authData.token, authData);
+      } else {
+        return authResult;
+      }
+    }
   }
 
   /// register a new user by username and a password.
-  static Future<AuthResult> registerByUserName(
-      String username, String password) async {
+  static Future<AuthResult> registerByUserName(String username, String password,
+      {AuthRequest? authData}) async {
     var body = jsonEncode({
       'username': username,
       'password': Util.encrypt(password),
@@ -39,7 +48,16 @@ class AuthClient {
     final Result result = await post('/api/v2/register/username', body);
     AuthResult authResult = AuthResult(result);
     authResult.user = await createUser(result);
-    return authResult;
+    if (authData == null) {
+      return authResult;
+    } else {
+      if (authResult.code == 200) {
+        authData.token = authResult.user?.token ?? "";
+        return OIDCClient.authByToken(authData.token, authData);
+      } else {
+        return authResult;
+      }
+    }
   }
 
   /// register a new user by phone number and an SMS verification code.
@@ -64,14 +82,11 @@ class AuthClient {
         jsonEncode({'account': account, 'password': Util.encrypt(password)});
     final Result result = await post('/api/v2/login/account', body);
 
+    AuthResult authResult = AuthResult(result);
+    authResult.user = await createUser(result);
     if (authData == null) {
-      AuthResult authResult = AuthResult(result);
-      authResult.user = await createUser(result);
       return authResult;
     } else {
-      AuthResult authResult = AuthResult(result);
-      authResult.user = await createUser(result);
-
       if (authResult.code == 200) {
         authData.token = authResult.user?.token ?? "";
 
@@ -87,15 +102,11 @@ class AuthClient {
       {AuthRequest? authData}) async {
     var body = jsonEncode({'phone': phone, 'code': code});
     final Result result = await post('/api/v2/login/phone-code', body);
-
+    AuthResult authResult = AuthResult(result);
+    authResult.user = await createUser(result);
     if (authData == null) {
-      AuthResult authResult = AuthResult(result);
-      authResult.user = await createUser(result);
       return authResult;
     } else {
-      AuthResult authResult = AuthResult(result);
-      authResult.user = await createUser(result);
-
       if (authResult.code == 200) {
         authData.token = authResult.user?.token ?? "";
 
@@ -106,26 +117,26 @@ class AuthClient {
     }
   }
 
-  /// login by LDAP username and password.
-  static Future<AuthResult> loginByLDAP(
-      String username, String password) async {
-    var body =
-        jsonEncode({'username': username, 'password': Util.encrypt(password)});
-    final Result result = await post('/api/v2/login/ldap', body);
-    AuthResult authResult = AuthResult(result);
-    authResult.user = await createUser(result);
-    return authResult;
-  }
-
-  /// login by AD username and password.
-  static Future<AuthResult> loginByAD(String username, String password) async {
-    var body =
-        jsonEncode({'username': username, 'password': Util.encrypt(password)});
-    final Result result = await post('/api/v2/login/ad', body);
-    AuthResult authResult = AuthResult(result);
-    authResult.user = await createUser(result);
-    return authResult;
-  }
+  // /// login by LDAP username and password.
+  // static Future<AuthResult> loginByLDAP(
+  //     String username, String password) async {
+  //   var body =
+  //       jsonEncode({'username': username, 'password': Util.encrypt(password)});
+  //   final Result result = await post('/api/v2/login/ldap', body);
+  //   AuthResult authResult = AuthResult(result);
+  //   authResult.user = await createUser(result);
+  //   return authResult;
+  // }
+  //
+  // /// login by AD username and password.
+  // static Future<AuthResult> loginByAD(String username, String password) async {
+  //   var body =
+  //       jsonEncode({'username': username, 'password': Util.encrypt(password)});
+  //   final Result result = await post('/api/v2/login/ad', body);
+  //   AuthResult authResult = AuthResult(result);
+  //   authResult.user = await createUser(result);
+  //   return authResult;
+  // }
 
   /// get current logged in user's profile.
   static Future<AuthResult> getCurrentUser() async {
