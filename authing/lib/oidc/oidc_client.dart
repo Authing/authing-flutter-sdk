@@ -179,7 +179,7 @@ class OIDCClient {
   }
 
   ///Token Change user information
-  static Future<AuthResult> getUserInfoByAccessToken(String accessToken,
+  static Future<Result> getUserInfoByAccessToken(String accessToken,
       [Map? data]) async {
     String url = "https://" + Util.getHost(Authing.config) + "/oidc/me";
     var client = HttpClient();
@@ -194,16 +194,15 @@ class OIDCClient {
       result.code = 200;
       result.message = "success";
       result.data = jsonDecode(res);
-      AuthResult authResult = AuthResult(result);
-      authResult.user = await AuthClient.createUser(result);
-      authResult.user =
-          await User.update(authResult.user ?? User(), data ?? {});
-      return authResult;
+      // AuthResult authResult = AuthResult(result);
+      // authResult.user = await AuthClient.createUser(result);
+      // authResult.user =
+      //     await User.update(authResult.user ?? User(), data ?? {});
+      return result;
     } else {
       result.code = response.statusCode;
       result.message = "getUserInfoByAccessToken failed. " + res;
-      AuthResult authResult = AuthResult(result);
-      return authResult;
+      return result;
     }
   }
 
