@@ -1,3 +1,7 @@
+## 1.1.10
+
+* update docs
+
 ## 1.1.9
 
 * bug fixes

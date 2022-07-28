@@ -318,6 +318,5 @@ void main() {
 
     var result2 = await OIDCClient.getUserInfoByAccessToken("accessToken");
     expect(result2.code, 200);
-    expect(result2.user != null, true);
   });
 }
