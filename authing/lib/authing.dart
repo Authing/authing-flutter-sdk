@@ -1,13 +1,11 @@
 library authing;
 
-import 'package:http/http.dart' as http;
-
 import 'client.dart';
 import 'config.dart';
 import 'result.dart';
 
 class Authing {
-  static const String VERSION = "1.1.8";
+  static const String VERSION = "1.1.9";
 
   static String sUserPoolId = "";
   static String sAppId = "";
@@ -24,13 +22,6 @@ class Authing {
     sAppId = appId;
 
     await requestPublicConfig();
-
-    http.get(Uri.parse(
-        "https://developer-beta.authing.cn/stats/sdk-trace/?appid=" +
-            appId +
-            "&sdk=flutter&version=" +
-            VERSION +
-            "&ip=flutter"));
   }
 
   static void setOnPremiseInfo(String host, String publicKey) {

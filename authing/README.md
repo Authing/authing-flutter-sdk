@@ -1323,7 +1323,7 @@ static Future<AuthResult> loginByAccount(String account, String password) async
 
 ```dart
 AuthResult results = await OIDCClient.loginByAccount("your account", "your password");
-User user = result.user; // user info
+User user = results.user; // user info
 ```
 
 <br>
