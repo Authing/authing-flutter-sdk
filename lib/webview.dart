@@ -56,6 +56,7 @@ class WebExampleState extends State<WebExample> {
       var res = await OIDCClient.authByCode(authCode, widget.authData);
       print(res.code);
       print(res.user?.accessToken);
+      print(res.user?.username);
     }
   }
 }

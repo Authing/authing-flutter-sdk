@@ -1,5 +1,6 @@
 import 'package:authing_sdk/authing.dart';
 import 'package:authing_sdk/client.dart';
+import 'package:authing_sdk/oidc/oidc_client.dart';
 import 'package:authing_sdk/result.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -222,5 +223,16 @@ void main() {
 
     result2 = await AuthClient.loginByScannedTicket(random);
     expect(result2.code, 200);
+  });
+
+  test('oidcLoginByPhoneCode', () async {
+    String phone = "+86xxx";
+
+    await Authing.init("60caaf41da89f1954875cee1", "60caaf41df670b771fd08937");
+
+    var res = await OIDCClient.loginByPhoneCode(phone, "1234");
+    expect(res.code, 200);
+    expect(res.user?.accessToken != null, true);
+    expect(res.user?.refreshToken != null, true);
   });
 }

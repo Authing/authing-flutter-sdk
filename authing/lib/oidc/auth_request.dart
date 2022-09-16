@@ -14,6 +14,7 @@ class AuthRequest {
   late String codeVerifier;
   late String codeChallenge;
   late String token;
+  String? clientSecret;
 
   void createAuthRequest() {
     clientId = Authing.sAppId;

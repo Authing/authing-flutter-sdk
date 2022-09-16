@@ -82,6 +82,22 @@ class _MyHomePageState extends State<MyHomePage> {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 70, vertical: 12),
               ),
+              const SizedBox(height: 12),
+              MaterialButton(
+                onPressed: () async {
+                  AuthResult result = await AuthClient.getCurrentUser();
+                  print(result.code);
+                  print(result.message);
+                  print(result.user?.username);
+                },
+                child: const Text(
+                  'getUserInfo',
+                  style: TextStyle(color: Colors.white),
+                ),
+                color: Colors.indigo[700],
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 70, vertical: 12),
+              ),
             ],
           ),
         ),

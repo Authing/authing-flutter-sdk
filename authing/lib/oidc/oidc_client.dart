@@ -13,6 +13,7 @@ import 'cookie_manager.dart';
 class OIDCClient {
   /// Build authorize URL
   static Future<String> buildAuthorizeUrl(AuthRequest authRequest) async {
+    String? secret = authRequest.clientSecret;
     return 'https://' +
         Util.getHost(Authing.config) +
         '/oidc/auth?_authing_lang=' +
@@ -32,10 +33,11 @@ class OIDCClient {
         "&prompt=consent" +
         "&state=" +
         authRequest.state +
-        "&code_challenge=" +
-        authRequest.codeChallenge +
-        "&code_challenge_method=" +
-        'S256';
+        (secret == null
+            ? "&code_challenge=" +
+                authRequest.codeChallenge +
+                "&code_challenge_method=S256"
+            : "");
   }
 
   /// OIDC prepare
@@ -53,8 +55,8 @@ class OIDCClient {
   }
 
   /// OIDC register a new user by username and a password.
-  static Future<AuthResult> registerByUserName(
-      String username, String password) async {
+  static Future<AuthResult> registerByUserName(String username, String password,
+      {AuthRequest? authRequest}) async {
     AuthRequest authData = await OIDCClient.prepareLogin();
     return AuthClient.registerByUserName(username, password,
         authData: authData);

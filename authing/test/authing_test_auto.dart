@@ -285,17 +285,6 @@ void main() {
     expect(res.user?.refreshToken != null, true);
   });
 
-  test('oidcLoginByPhoneCode', () async {
-    String phone = "+86xxx";
-
-    await Authing.init("60caaf41da89f1954875cee1", "60caaf41df670b771fd08937");
-
-    var res = await OIDCClient.loginByPhoneCode(phone, "1234");
-    expect(res.code, 200);
-    expect(res.user?.accessToken != null, true);
-    expect(res.user?.refreshToken != null, true);
-  });
-
   test('buildAuthorizeUrl', () async {
     var authRequest = AuthRequest();
     authRequest.scope = "";
