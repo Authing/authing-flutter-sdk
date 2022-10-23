@@ -1,10 +1,8 @@
-import 'package:authing_sdk_v3/authing.dart';
-import 'package:authing_sdk_v3/client.dart';
-import 'package:authing_sdk_v3/oidc/auth_request.dart';
-import 'package:authing_sdk_v3/oidc/oidc_client.dart';
-import 'package:authing_sdk_v3/options/login_options.dart';
-import 'package:authing_sdk_v3/options/register_options.dart';
-import 'package:authing_sdk_v3/result.dart';
+import 'package:authing_sdk/authing.dart';
+import 'package:authing_sdk/client.dart';
+import 'package:authing_sdk/oidc/auth_request.dart';
+import 'package:authing_sdk/oidc/oidc_client.dart';
+import 'package:authing_sdk/result.dart';
 import 'package:flutter/material.dart';
 import 'webview.dart';
 
@@ -57,9 +55,9 @@ class _MyHomePageState extends State<MyHomePage> {
                   var authData = AuthRequest();
                   authData.createAuthRequest();
                   var url = await OIDCClient.buildAuthorizeUrl(authData);
-                  // Navigator.of(context).push(MaterialPageRoute(
-                      // builder: (context) =>
-                          // WebExample(url: url, authData: authData)));
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) =>
+                          WebExample(url: url, authData: authData)));
                 },
                 child: const Text(
                   'webViewLogin',
@@ -73,17 +71,17 @@ class _MyHomePageState extends State<MyHomePage> {
               MaterialButton(
                 onPressed: () async {
 
-                  // var opt = ();
-                  AuthResult result = await AuthClient.loginByEmail("12563438@qq.com", "123456");
-                  print(result.statusCode);
-                  print(result.apiCode);
-                  print(result.message);
-                  print(result.data);
-                  print(result.user?.accessToken);
+                  // authing_sdk_v3
+                  // var options = LoginOptions();
+                  // options.passwordEncryptType = 'RSA';
+                  // AuthResult result = await AuthClient.loginByUsername('test', 'password');
+                  // print(result.statusCode);
+                  // print(result.apiCode);
+                  // print(result.message);
+                  // print(result.data);
 
-                  return;
-                  // AuthResult result = await AuthClient.logout();
-                  print(result.statusCode);
+                  AuthResult result = await AuthClient.logout();
+                  print(result.code);
                   print(result.message);
                 },
                 child: const Text(
@@ -97,10 +95,10 @@ class _MyHomePageState extends State<MyHomePage> {
               const SizedBox(height: 12),
               MaterialButton(
                 onPressed: () async {
-                  // AuthResult result = await AuthClient.getCurrentUser();
-                  // print(result.statusCode);
-                  // print(result.message);
-                  // print(result.user?.username);
+                  AuthResult result = await AuthClient.getCurrentUser();
+                  print(result.code);
+                  print(result.message);
+                  print(result.user?.username);
                 },
                 child: const Text(
                   'getUserInfo',
@@ -119,8 +117,8 @@ class _MyHomePageState extends State<MyHomePage> {
           var authData = AuthRequest();
           authData.createAuthRequest();
           var url = await OIDCClient.buildAuthorizeUrl(authData);
-          // Navigator.of(context).push(MaterialPageRoute(
-              // builder: (context) => WebExample(url: url, authData: authData)));
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => WebExample(url: url, authData: authData)));
         },
         tooltip: 'webView',
         child: const Icon(Icons.forward),

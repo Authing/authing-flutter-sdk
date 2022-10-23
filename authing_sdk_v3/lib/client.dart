@@ -52,8 +52,7 @@ class AuthClient {
   }
 
   /// register a new user by phone number and an SMS verification code.
-  static Future<AuthResult> registerByPhoneCode(
-      String phone, String passCode, [String? phoneCountryCode, RegisterOptions? options]) async {
+  static Future<AuthResult> registerByPhoneCode(String phone, String passCode, [String? phoneCountryCode, RegisterOptions? options]) async {
 
     Map map = {};
     map.putIfAbsent('phone', () => phone);
@@ -249,8 +248,7 @@ class AuthClient {
   }
 
   /// send an SMS code.
-  static Future<AuthResult> sendSms(String phone, String channel,
-      [String? phoneCountryCode]) async {
+  static Future<AuthResult> sendSms(String phone, String channel, [String? phoneCountryCode]) async {
     Map map = {};
     map.putIfAbsent('phoneNumber', () => phone);
     map.putIfAbsent('channel', () => channel);
