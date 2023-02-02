@@ -5,9 +5,9 @@ import 'package:authing_sdk_v3/oidc/oidc_client.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'options/register_options.dart';
-import 'options/login_options.dart';
 import 'authing.dart';
+import 'options/login_options.dart';
+import 'options/register_options.dart';
 import 'result.dart';
 import 'user.dart';
 import 'util.dart';
@@ -17,11 +17,15 @@ class AuthClient {
   static User? currentUser;
 
   /// register a new user by email address and a password.
-  static Future<AuthResult> registerByEmail(String email, String password, [RegisterOptions? options]) async {
-
+  static Future<AuthResult> registerByEmail(String email, String password,
+      [RegisterOptions? options]) async {
     var body = {
       'connection': 'PASSWORD',
-      'passwordPayload': {'email': email, 'password': Util.encrypt(password, encryptType: options?.passwordEncryptType)},
+      'passwordPayload': {
+        'email': email,
+        'password':
+            Util.encrypt(password, encryptType: options?.passwordEncryptType)
+      },
     };
 
     var jsonBody = jsonEncode(body);
@@ -35,8 +39,8 @@ class AuthClient {
   }
 
   /// register a new user by email address and a passcode.
-  static Future<AuthResult> registerByEmailCode(String email, String passCode, [RegisterOptions? options]) async {
-
+  static Future<AuthResult> registerByEmailCode(String email, String passCode,
+      [RegisterOptions? options]) async {
     var body = {
       'connection': 'PASSCODE',
       'passCodePayload': {'email': email, 'passCode': passCode},
@@ -52,8 +56,8 @@ class AuthClient {
   }
 
   /// register a new user by phone number and an SMS verification code.
-  static Future<AuthResult> registerByPhoneCode(String phone, String passCode, [String? phoneCountryCode, RegisterOptions? options]) async {
-
+  static Future<AuthResult> registerByPhoneCode(String phone, String passCode,
+      [String? phoneCountryCode, RegisterOptions? options]) async {
     Map map = {};
     map.putIfAbsent('phone', () => phone);
     map.putIfAbsent('passCode', () => passCode);
@@ -76,11 +80,15 @@ class AuthClient {
   }
 
   /// register a new user by username and a password.
-  static Future<AuthResult> registerByUsername(String username, String password, [RegisterOptions? options]) async {
-
+  static Future<AuthResult> registerByUsername(String username, String password,
+      [RegisterOptions? options]) async {
     var body = {
       'connection': 'PASSWORD',
-      'passwordPayload': {'username': username, 'password': Util.encrypt(password, encryptType: options?.passwordEncryptType)},
+      'passwordPayload': {
+        'username': username,
+        'password':
+            Util.encrypt(password, encryptType: options?.passwordEncryptType)
+      },
     };
     var jsonBody = jsonEncode(body);
     if (options != null) {
@@ -93,11 +101,15 @@ class AuthClient {
   }
 
   /// login by email and password.
-  static Future<AuthResult> loginByEmail(String email, String password, [LoginOptions? options]) async {
-
+  static Future<AuthResult> loginByEmail(String email, String password,
+      [LoginOptions? options]) async {
     var body = {
       'connection': 'PASSWORD',
-      'passwordPayload': {'email': email, 'password': Util.encrypt(password, encryptType: options?.passwordEncryptType)},
+      'passwordPayload': {
+        'email': email,
+        'password':
+            Util.encrypt(password, encryptType: options?.passwordEncryptType)
+      },
     };
     var jsonBody = jsonEncode(body);
     if (options != null) {
@@ -110,8 +122,8 @@ class AuthClient {
   }
 
   /// login by email address and a passcode.
-  static Future<AuthResult> loginByEmailCode(String email, String passCode, [LoginOptions? options]) async {
-
+  static Future<AuthResult> loginByEmailCode(String email, String passCode,
+      [LoginOptions? options]) async {
     var body = {
       'connection': 'PASSCODE',
       'passCodePayload': {'email': email, 'passCode': passCode},
@@ -127,9 +139,8 @@ class AuthClient {
   }
 
   /// login by phone number and an SMS verification code.
-  static Future<AuthResult> loginByPhoneCode(
-      String phone, String passCode, [String? phoneCountryCode, LoginOptions? options]) async {
-
+  static Future<AuthResult> loginByPhoneCode(String phone, String passCode,
+      [String? phoneCountryCode, LoginOptions? options]) async {
     Map map = {};
     map.putIfAbsent('phone', () => phone);
     map.putIfAbsent('passCode', () => passCode);
@@ -151,11 +162,15 @@ class AuthClient {
   }
 
   /// login by username and a password.
-  static Future<AuthResult> loginByUsername(String username, String password, [LoginOptions? options]) async {
-
+  static Future<AuthResult> loginByUsername(String username, String password,
+      [LoginOptions? options]) async {
     var body = {
       'connection': 'PASSWORD',
-      'passwordPayload': {'username': username, 'password': Util.encrypt(password, encryptType: options?.passwordEncryptType)},
+      'passwordPayload': {
+        'username': username,
+        'password':
+            Util.encrypt(password, encryptType: options?.passwordEncryptType)
+      },
     };
     var jsonBody = jsonEncode(body);
     if (options != null) {
@@ -168,11 +183,15 @@ class AuthClient {
   }
 
   /// login by account and password.
-  static Future<AuthResult> loginByAccount(String account, String password, [LoginOptions? options]) async {
-
+  static Future<AuthResult> loginByAccount(String account, String password,
+      [LoginOptions? options]) async {
     var body = {
       'connection': 'PASSWORD',
-      'passwordPayload': {'account': account, 'password': Util.encrypt(password, encryptType: options?.passwordEncryptType)},
+      'passwordPayload': {
+        'account': account,
+        'password':
+            Util.encrypt(password, encryptType: options?.passwordEncryptType)
+      },
     };
     var jsonBody = jsonEncode(body);
     if (options != null) {
@@ -185,8 +204,9 @@ class AuthClient {
   }
 
   /// login by ThirdPart.
-  static Future<AuthResult> loginByThirdPart(String code, String connection, String extIdpConnidentifier, [LoginOptions? options]) async {
-
+  static Future<AuthResult> loginByThirdPart(
+      String code, String connection, String extIdpConnidentifier,
+      [LoginOptions? options]) async {
     Map map = {};
     map.putIfAbsent('connection', () => connection);
     map.putIfAbsent('extIdpConnidentifier', () => extIdpConnidentifier);
@@ -219,12 +239,14 @@ class AuthClient {
   }
 
   /// login by YiDun.
-  static Future<AuthResult> loginByOneAuth(String token, String accessToken, String extIdpConnidentifier, [LoginOptions? options]) async {
-
+  static Future<AuthResult> loginByOneAuth(
+      String token, String accessToken, String extIdpConnidentifier,
+      [LoginOptions? options]) async {
     Map map = {};
     map.putIfAbsent('connection', () => 'yidun');
     map.putIfAbsent('extIdpConnidentifier', () => extIdpConnidentifier);
-    map.putIfAbsent('yidunPayload', () => {'token': token, 'accessToken': accessToken});
+    map.putIfAbsent(
+        'yidunPayload', () => {'token': token, 'accessToken': accessToken});
 
     var jsonBody = jsonEncode(map);
     if (options != null) {
@@ -237,10 +259,16 @@ class AuthClient {
   }
 
   /// get current logged in user's profile.
-  static Future<AuthResult> getCurrentUser([bool? customData, bool? identities]) async {
+  static Future<AuthResult> getCurrentUser(
+      [bool? customData, bool? identities, bool? departmentIds]) async {
     bool customDataBool = customData == null ? false : true;
     bool identitiesBool = identities == null ? false : true;
-    final Result result = await get('api/v3/get-profile?withCustomData=' + customDataBool.toString() + '?withIdentities=' + identitiesBool.toString());
+    final Result result = await get('api/v3/get-profile?withCustomData=' +
+        customDataBool.toString() +
+        '&withIdentities=' +
+        identitiesBool.toString() +
+        '&withDepartmentIds=' +
+        departmentIds.toString());
     AuthResult authResult = AuthResult(result);
     authResult.user = await createUser(result);
 
@@ -248,7 +276,8 @@ class AuthClient {
   }
 
   /// send an SMS code.
-  static Future<AuthResult> sendSms(String phone, String channel, [String? phoneCountryCode]) async {
+  static Future<AuthResult> sendSms(String phone, String channel,
+      [String? phoneCountryCode]) async {
     Map map = {};
     map.putIfAbsent('phoneNumber', () => phone);
     map.putIfAbsent('channel', () => channel);
@@ -273,7 +302,8 @@ class AuthClient {
     Map map = {};
     map.putIfAbsent('qrcodeId', () => qrcodeId);
     map.putIfAbsent('action', () => 'SCAN');
-    final Result result = await post('/api/v3/change-qrcode-status', jsonEncode(map));
+    final Result result =
+        await post('/api/v3/change-qrcode-status', jsonEncode(map));
     return AuthResult(result);
   }
 
@@ -282,7 +312,8 @@ class AuthClient {
     Map map = {};
     map.putIfAbsent('qrcodeId', () => qrcodeId);
     map.putIfAbsent('action', () => 'CANCEL');
-    final Result result = await post('/api/v3/change-qrcode-status', jsonEncode(map));
+    final Result result =
+        await post('/api/v3/change-qrcode-status', jsonEncode(map));
     return AuthResult(result);
   }
 
@@ -290,18 +321,21 @@ class AuthClient {
   static Future<AuthResult> loginByScannedTicket(String ticket) async {
     Map map = {};
     map.putIfAbsent('ticket', () => ticket);
-    final Result result = await post('/api/v3/exchange-tokenset-with-qrcode-ticket', jsonEncode(map));
+    final Result result = await post(
+        '/api/v3/exchange-tokenset-with-qrcode-ticket', jsonEncode(map));
     return AuthResult(result);
   }
 
   /// set user's custom data.
   static Future<AuthResult> updateProfile(Map object) async {
-    final Result result = await post('/api/v3/update-profile', jsonEncode(object));
+    final Result result =
+        await post('/api/v3/update-profile', jsonEncode(object));
     return AuthResult(result);
   }
 
   /// bind phone to current user.
-  static Future<AuthResult> bindPhone(String phoneNumber, String passCode, [String? phoneCountryCode]) async {
+  static Future<AuthResult> bindPhone(String phoneNumber, String passCode,
+      [String? phoneCountryCode]) async {
     Map map = {};
     map.putIfAbsent('phoneNumber', () => phoneNumber);
     map.putIfAbsent('passCode', () => passCode);
@@ -321,11 +355,12 @@ class AuthClient {
 
   /// 2230 same phone number
   /// 1320004 phone already bind
-  static Future<AuthResult> updatePhone(String newPhoneNumber, String newPhonePassCode,
+  static Future<AuthResult> updatePhone(
+      String newPhoneNumber, String newPhonePassCode,
       [String? oldPhoneNumber,
-        String? oldPhonePassCode,
-        String? newPhoneCountryCode,
-        String? oldPhoneCountryCode]) async {
+      String? oldPhonePassCode,
+      String? newPhoneCountryCode,
+      String? oldPhoneCountryCode]) async {
     Map map = {};
     map.putIfAbsent('newPhoneNumber', () => newPhoneNumber);
     map.putIfAbsent('newPhonePassCode', () => newPhonePassCode);
@@ -339,15 +374,12 @@ class AuthClient {
     if (oldPhoneCountryCode != null) {
       map.putIfAbsent('oldPhoneCountryCode', () => oldPhoneCountryCode);
     }
-    var body = {
-      'verifyMethod': 'PHONE_PASSCODE',
-      'phonePassCodePayload': map
-    };
+    var body = {'verifyMethod': 'PHONE_PASSCODE', 'phonePassCodePayload': map};
     final Result tokenResult =
-    await post('/api/v3/verify-update-phone-request', jsonEncode(body));
+        await post('/api/v3/verify-update-phone-request', jsonEncode(body));
     if (tokenResult.statusCode == 200) {
-      final Result result =
-      await post('/api/v3/update-phone', jsonEncode(tokenResult.data['updatePhoneToken']));
+      final Result result = await post('/api/v3/update-phone',
+          jsonEncode(tokenResult.data['updatePhoneToken']));
       AuthResult authResult = AuthResult(result);
       return authResult;
     } else {
@@ -372,7 +404,8 @@ class AuthClient {
   }
 
   /// update current user's email address.
-  static Future<AuthResult> updateEmail(String newEmail, String newEmailPassCode,
+  static Future<AuthResult> updateEmail(
+      String newEmail, String newEmailPassCode,
       [String? oldEmail, String? oldEmailPassCode]) async {
     Map map = {};
     map.putIfAbsent('newEmail', () => newEmail);
@@ -382,15 +415,12 @@ class AuthClient {
       map.putIfAbsent('oldEmailCode', () => oldEmailPassCode);
     }
 
-    var body = {
-      'verifyMethod': 'EMAIL_PASSCODE',
-      'emailPassCodePayload': map
-    };
+    var body = {'verifyMethod': 'EMAIL_PASSCODE', 'emailPassCodePayload': map};
     final Result tokenResult =
-    await post('/api/v3/verify-update-email-request', jsonEncode(body));
+        await post('/api/v3/verify-update-email-request', jsonEncode(body));
     if (tokenResult.statusCode == 200) {
-      final Result result =
-      await post('/api/v3/update-email', jsonEncode(tokenResult.data['updateEmailToken']));
+      final Result result = await post('/api/v3/update-email',
+          jsonEncode(tokenResult.data['updateEmailToken']));
       AuthResult authResult = AuthResult(result);
       return authResult;
     } else {
@@ -402,42 +432,41 @@ class AuthClient {
   static Future<AuthResult> updatePassword(String newPassword,
       [String? oldPassword, String? passwordEncryptType]) async {
     Map map = {};
-    map.putIfAbsent('newPassword', () => Util.encrypt(newPassword, encryptType: passwordEncryptType));
+    map.putIfAbsent('newPassword',
+        () => Util.encrypt(newPassword, encryptType: passwordEncryptType));
     if (oldPassword != null) {
-      map.putIfAbsent('oldPassword', () => Util.encrypt(oldPassword, encryptType: passwordEncryptType));
+      map.putIfAbsent('oldPassword',
+          () => Util.encrypt(oldPassword, encryptType: passwordEncryptType));
     }
     if (passwordEncryptType != null) {
       map.putIfAbsent('passwordEncryptType', () => passwordEncryptType);
     }
     final Result result =
-    await post('/api/v3/update-password', jsonEncode(map));
+        await post('/api/v3/update-password', jsonEncode(map));
     AuthResult authResult = AuthResult(result);
     return authResult;
   }
 
   /// reset password by phone number and an SMS code.
   static Future<AuthResult> resetPasswordByPhone(
-      String phoneNumber, String passCode, String password, [String? phoneCountryCode, String? passwordEncryptType]) async {
+      String phoneNumber, String passCode, String password,
+      [String? phoneCountryCode, String? passwordEncryptType]) async {
     Map map = {};
     map.putIfAbsent('phoneNumber', () => phoneNumber);
     map.putIfAbsent('passCode', () => passCode);
     if (phoneCountryCode != null) {
       map.putIfAbsent('phoneCountryCode', () => phoneCountryCode);
     }
-    var body = {
-      'verifyMethod': 'PHONE_PASSCODE',
-      'phonePassCodePayload': map
-    };
+    var body = {'verifyMethod': 'PHONE_PASSCODE', 'phonePassCodePayload': map};
     final Result tokenResult =
-    await post('/api/v3/verify-reset-password-request', jsonEncode(body));
+        await post('/api/v3/verify-reset-password-request', jsonEncode(body));
     if (tokenResult.statusCode == 200) {
       var resultBody = {
         'passwordResetToken': tokenResult.data['passwordResetToken'],
         'password': Util.encrypt(password, encryptType: passwordEncryptType)
       };
       final Result result =
-      await post('/api/v3/reset-password',
-          jsonEncode(resultBody));
+          await post('/api/v3/reset-password', jsonEncode(resultBody));
       AuthResult authResult = AuthResult(result);
       return authResult;
     } else {
@@ -447,24 +476,21 @@ class AuthClient {
 
   /// reset password by email and an email code.
   static Future<AuthResult> resetPasswordByEmailCode(
-      String email, String passCode, String password, [String? passwordEncryptType]) async {
+      String email, String passCode, String password,
+      [String? passwordEncryptType]) async {
     Map map = {};
     map.putIfAbsent('email', () => email);
     map.putIfAbsent('passCode', () => passCode);
-    var body = {
-      'verifyMethod': 'EMAIL_PASSCODE',
-      'emailPassCodePayload': map
-    };
+    var body = {'verifyMethod': 'EMAIL_PASSCODE', 'emailPassCodePayload': map};
     final Result tokenResult =
-    await post('/api/v3/verify-reset-password-request', jsonEncode(body));
+        await post('/api/v3/verify-reset-password-request', jsonEncode(body));
     if (tokenResult.statusCode == 200) {
       var resultBody = {
         'passwordResetToken': tokenResult.data['passwordResetToken'],
         'password': Util.encrypt(password, encryptType: passwordEncryptType)
       };
       final Result result =
-      await post('/api/v3/reset-password',
-          jsonEncode(resultBody));
+          await post('/api/v3/reset-password', jsonEncode(resultBody));
       AuthResult authResult = AuthResult(result);
       return authResult;
     } else {
@@ -474,26 +500,23 @@ class AuthClient {
 
   /// delete account by phone number and an SMS code.
   static Future<AuthResult> deleteAccountByPhone(
-      String phoneNumber, String passCode, [String? phoneCountryCode]) async {
+      String phoneNumber, String passCode,
+      [String? phoneCountryCode]) async {
     Map map = {};
     map.putIfAbsent('phoneNumber', () => phoneNumber);
     map.putIfAbsent('passCode', () => passCode);
     if (phoneCountryCode != null) {
       map.putIfAbsent('phoneCountryCode', () => phoneCountryCode);
     }
-    var body = {
-      'verifyMethod': 'PHONE_PASSCODE',
-      'phonePassCodePayload': map
-    };
+    var body = {'verifyMethod': 'PHONE_PASSCODE', 'phonePassCodePayload': map};
     final Result tokenResult =
-    await post('/api/v3/verify-delete-account-request', jsonEncode(body));
+        await post('/api/v3/verify-delete-account-request', jsonEncode(body));
     if (tokenResult.statusCode == 200) {
       var resultBody = {
         'deleteAccountToken': tokenResult.data['deleteAccountToken'],
       };
       final Result result =
-      await post('/api/v3/delete-account',
-          jsonEncode(resultBody));
+          await post('/api/v3/delete-account', jsonEncode(resultBody));
       AuthResult authResult = AuthResult(result);
       return authResult;
     } else {
@@ -508,19 +531,15 @@ class AuthClient {
     map.putIfAbsent('email', () => email);
     map.putIfAbsent('passCode', () => passCode);
 
-    var body = {
-      'verifyMethod': 'EMAIL_PASSCODE',
-      'emailPassCodePayload': map
-    };
+    var body = {'verifyMethod': 'EMAIL_PASSCODE', 'emailPassCodePayload': map};
     final Result tokenResult =
-    await post('/api/v3/verify-delete-account-request', jsonEncode(body));
+        await post('/api/v3/verify-delete-account-request', jsonEncode(body));
     if (tokenResult.statusCode == 200) {
       var resultBody = {
         'deleteAccountToken': tokenResult.data['deleteAccountToken'],
       };
       final Result result =
-      await post('/api/v3/delete-account',
-          jsonEncode(resultBody));
+          await post('/api/v3/delete-account', jsonEncode(resultBody));
       AuthResult authResult = AuthResult(result);
       return authResult;
     } else {
@@ -529,26 +548,23 @@ class AuthClient {
   }
 
   /// delete account by password.
-  static Future<AuthResult> deleteAccountByPassword(
-      String password, [String? passwordEncryptType]) async {
+  static Future<AuthResult> deleteAccountByPassword(String password,
+      [String? passwordEncryptType]) async {
     Map map = {};
-    map.putIfAbsent('password', () => Util.encrypt(password, encryptType: passwordEncryptType));
+    map.putIfAbsent('password',
+        () => Util.encrypt(password, encryptType: passwordEncryptType));
     if (passwordEncryptType != null) {
       map.putIfAbsent('passwordEncryptType', () => passwordEncryptType);
     }
-    var body = {
-      'verifyMethod': 'PASSWORD',
-      'passwordPayload': map
-    };
+    var body = {'verifyMethod': 'PASSWORD', 'passwordPayload': map};
     final Result tokenResult =
-    await post('/api/v3/verify-delete-account-request', jsonEncode(body));
+        await post('/api/v3/verify-delete-account-request', jsonEncode(body));
     if (tokenResult.statusCode == 200) {
       var resultBody = {
         'deleteAccountToken': tokenResult.data['deleteAccountToken'],
       };
       final Result result =
-      await post('/api/v3/delete-account',
-          jsonEncode(resultBody));
+          await post('/api/v3/delete-account', jsonEncode(resultBody));
       AuthResult authResult = AuthResult(result);
       return authResult;
     } else {
@@ -567,12 +583,21 @@ class AuthClient {
   }
 
   /// get login history.
-  static Future<AuthResult> getLoginHistory(int page, int limit, [bool? success, String? start, String? end]) async {
+  static Future<AuthResult> getLoginHistory(int page, int limit,
+      [bool? success, String? start, String? end]) async {
     String successStr = success == null ? '' : '&success=' + success.toString();
     String startStr = start == null ? '' : "&start=" + start;
     String endStr = end == null ? '' : "&end=" + end;
 
-    final Result result = await get('/api/v3/get-my-login-history?appId=' + Authing.sAppId + '&page=' + page.toString() + '&limit=' + limit.toString() + successStr + startStr + endStr);
+    final Result result = await get('/api/v3/get-my-login-history?appId=' +
+        Authing.sAppId +
+        '&page=' +
+        page.toString() +
+        '&limit=' +
+        limit.toString() +
+        successStr +
+        startStr +
+        endStr);
     AuthResult authResult = AuthResult(result);
     return authResult;
   }
@@ -605,32 +630,45 @@ class AuthClient {
   }
 
   /// get department List
-  static Future<AuthResult> getDepartmentList(int page, int limit, [bool? withCustomData, String? sortBy, String? orderBy]) async {
-    String withCustomDataStr = withCustomData == null ? 'false' : withCustomData.toString();
+  static Future<AuthResult> getDepartmentList(int page, int limit,
+      [bool? withCustomData, String? sortBy, String? orderBy]) async {
+    String withCustomDataStr =
+        withCustomData == null ? 'false' : withCustomData.toString();
     String sortByStr = sortBy ?? 'JoinDepartmentAt';
     String orderByStr = orderBy ?? 'Desc';
 
-    final Result result = await get('/api/v3/get-my-department-list?page=' + page.toString() + '&limit=' + limit.toString() + '&withCustomData=' + withCustomDataStr + '&sortBy=' + sortByStr + '&orderBy=' + orderByStr);
+    final Result result = await get('/api/v3/get-my-department-list?page=' +
+        page.toString() +
+        '&limit=' +
+        limit.toString() +
+        '&withCustomData=' +
+        withCustomDataStr +
+        '&sortBy=' +
+        sortByStr +
+        '&orderBy=' +
+        orderByStr);
     AuthResult authResult = AuthResult(result);
     return authResult;
   }
 
   /// get authorized resources
-  static Future<Result> getAuthorizedResources([String? namespace, String? resourceType]) async {
+  static Future<Result> getAuthorizedResources(
+      [String? namespace, String? resourceType]) async {
     final Result result = await get('/api/v3/get-my-authorized-resources' +
-        (namespace == null ? "" : "?namespace=" + namespace) + (resourceType == null ? "" : "?resourceType=" + resourceType));
+        (namespace == null ? "" : "?namespace=" + namespace) +
+        (resourceType == null ? "" : "?resourceType=" + resourceType));
     return result;
   }
 
   /// mfa bind Email
   static Future<AuthResult> mfaBindEmail(String email, String passCode) async {
-
     var body = {
       'factorType': 'EMAIL',
       'profile': {'email': email},
     };
     var jsonBody = jsonEncode(body);
-    final Result tokenResult = await post('/api/v3/send-enroll-factor-request', jsonBody);
+    final Result tokenResult =
+        await post('/api/v3/send-enroll-factor-request', jsonBody);
     if (tokenResult.statusCode == 200) {
       var resultBody = {
         'factorType': 'EMAIL',
@@ -638,8 +676,7 @@ class AuthClient {
         'enrollmentData': {'passCode': passCode}
       };
       final Result result =
-      await post('/api/v3/enroll-factor',
-          jsonEncode(resultBody));
+          await post('/api/v3/enroll-factor', jsonEncode(resultBody));
       AuthResult authResult = AuthResult(result);
       return authResult;
     } else {
@@ -648,7 +685,8 @@ class AuthClient {
   }
 
   /// mfa bind phone
-  static Future<AuthResult> mfaBindPhone(String phoneNumber, String passCode, [String? phoneCountryCode]) async {
+  static Future<AuthResult> mfaBindPhone(String phoneNumber, String passCode,
+      [String? phoneCountryCode]) async {
     Map map = {};
     map.putIfAbsent('phoneNumber', () => phoneNumber);
     if (phoneCountryCode != null) {
@@ -659,7 +697,8 @@ class AuthClient {
       'profile': map,
     };
     var jsonBody = jsonEncode(body);
-    final Result tokenResult = await post('/api/v3/send-enroll-factor-request', jsonBody);
+    final Result tokenResult =
+        await post('/api/v3/send-enroll-factor-request', jsonBody);
     if (tokenResult.statusCode == 200) {
       var resultBody = {
         'factorType': 'SMS',
@@ -667,8 +706,7 @@ class AuthClient {
         'enrollmentData': {'passCode': passCode}
       };
       final Result result =
-      await post('/api/v3/enroll-factor',
-          jsonEncode(resultBody));
+          await post('/api/v3/enroll-factor', jsonEncode(resultBody));
       AuthResult authResult = AuthResult(result);
       return authResult;
     } else {
@@ -682,7 +720,8 @@ class AuthClient {
       'factorType': 'OTP',
     };
     var jsonBody = jsonEncode(body);
-    final Result tokenResult = await post('/api/v3/send-enroll-factor-request', jsonBody);
+    final Result tokenResult =
+        await post('/api/v3/send-enroll-factor-request', jsonBody);
     if (tokenResult.statusCode == 200) {
       var resultBody = {
         'factorType': 'OTP',
@@ -690,8 +729,7 @@ class AuthClient {
         'enrollmentData': {'passCode': passCode}
       };
       final Result result =
-      await post('/api/v3/enroll-factor',
-          jsonEncode(resultBody));
+          await post('/api/v3/enroll-factor', jsonEncode(resultBody));
       AuthResult authResult = AuthResult(result);
       return authResult;
     } else {
@@ -728,7 +766,6 @@ class AuthClient {
   static Future<Result> getSystemConfig() async {
     return await get('/api/v3/system');
   }
-
 
   static Future<User?> createUser(Result result) async {
     if (result.statusCode == 200) {
