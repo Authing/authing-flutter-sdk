@@ -1,7 +1,5 @@
 import 'dart:convert';
 
-import 'package:authing_sdk_v3/oidc/auth_request.dart';
-import 'package:authing_sdk_v3/oidc/oidc_client.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -263,12 +261,15 @@ class AuthClient {
       [bool? customData, bool? identities, bool? departmentIds]) async {
     bool customDataBool = customData == null ? false : true;
     bool identitiesBool = identities == null ? false : true;
-    final Result result = await get('api/v3/get-profile?withCustomData=' +
+    bool departmentIdsBool = departmentIds == null ? false : true;
+    String url = '/api/v3/get-profile?withCustomData=' +
         customDataBool.toString() +
         '&withIdentities=' +
         identitiesBool.toString() +
         '&withDepartmentIds=' +
-        departmentIds.toString());
+        departmentIdsBool.toString();
+    final Result result = await get(url);
+
     AuthResult authResult = AuthResult(result);
     authResult.user = await createUser(result);
 

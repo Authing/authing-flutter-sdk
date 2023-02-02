@@ -1,11 +1,10 @@
-import 'package:authing_sdk_v3/oidc/auth_request.dart';
 import 'user.dart';
 
 class Result {
   late int statusCode;
   int? apiCode;
   late String message = "";
-  late Map data;
+  late Map data = {};
 }
 
 class AuthResult {

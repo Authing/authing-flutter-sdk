@@ -18,7 +18,7 @@ and the Flutter guide for
 in your pubspec.yaml, add the following dependency:
 
 ```yaml
-authing_sdk_v3: ^1.0.0
+authing_sdk_v3: ^1.0.1
 ```
 
 ## SDK initialization
