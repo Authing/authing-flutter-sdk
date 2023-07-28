@@ -184,7 +184,7 @@ Register a new user by phone number and a verification code. Phone number must b
 Must call [sendSms](#send-sms-code) method to get an SMS verification code before calling this method.
 
 ```dart
-static Future<AuthResult> registerByPhoneCode(String phone, String code, String password) async
+static Future<AuthResult> registerByPhoneCode(String phone, String code, String password, {String? phoneCountryCode}) async
 ```
 
 **params**
@@ -192,11 +192,12 @@ static Future<AuthResult> registerByPhoneCode(String phone, String code, String 
 * *phone* phone number
 * *code* SMS code
 * *password* clear text password
+* *phoneCountryCode* country code
 
 **example**
 
 ```dart
-AuthResult result = await AuthClient.registerByPhoneCode("13012345678", "1121", "strong");
+AuthResult result = await AuthClient.registerByPhoneCode("13012345678", "1121", "strong", phoneCountryCode: "+86");
 User user = result.user;
 ```
 
@@ -236,18 +237,19 @@ User user = result.user; // user info
 login by phone number and a verification code. Must call [sendSms](#send-sms-code) method to get an SMS verification code before calling this method.
 
 ```dart
-static Future<AuthResult> loginByPhoneCode(String phone, String code) async
+static Future<AuthResult> loginByPhoneCode(String phone, String code, {String? phoneCountryCode}) async
 ```
 
 **params**
 
 * *phone* phone number
 * *code* SMS code
+* *phoneCountryCode* country code
 
 **example**
 
 ```dart
-AuthResult result = await AuthClient.loginByPhoneCode("13012345678", "1234");
+AuthResult result = await AuthClient.loginByPhoneCode("13012345678", "1234", phoneCountryCode: "+86");
 User user = result.user; // get user info
 ```
 
@@ -1334,13 +1336,14 @@ login by phone number and a verification code. Must call [sendSms](#send-sms-cod
 
 
 ```dart
-static Future<AuthResult> loginByPhoneCode(String phone, String code) async
+static Future<AuthResult> loginByPhoneCode(String phone, String code, {String? phoneCountryCode}) async
 ```
 
 **params**
 
 * *phone* phone number
 * *code* SMS code
+* *phoneCountryCode* country code
 
 **example**
 

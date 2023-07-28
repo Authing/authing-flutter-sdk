@@ -1,3 +1,7 @@
+## 1.1.11
+
+* signIn and signup added parameter phoneCountryCode
+
 ## 1.1.10
 
 * update docs
