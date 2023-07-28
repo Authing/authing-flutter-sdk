@@ -63,14 +63,18 @@ class AuthClient {
   /// register a new user by phone number and an SMS verification code.
   static Future<AuthResult> registerByPhoneCode(
       String phone, String code, String password,
-      {AuthRequest? authData}) async {
-    var body = jsonEncode({
-      'phone': phone,
-      'code': code,
-      'password': Util.encrypt(password),
-      'forceLogin': true
-    });
-    final Result result = await post('/api/v2/register/phone-code', body);
+      {String? phoneCountryCode, AuthRequest? authData}) async {
+    Map map = {};
+    map.putIfAbsent('phone', () => phone);
+    map.putIfAbsent('code', () => code);
+    map.putIfAbsent('password', () => Util.encrypt(password));
+    map.putIfAbsent('forceLogin', () => true);
+    if (phoneCountryCode != null) {
+      map.putIfAbsent('phoneCountryCode', () => phoneCountryCode);
+    }
+
+    final Result result =
+        await post('/api/v2/register/phone-code', jsonEncode(map));
     AuthResult authResult = AuthResult(result);
     authResult.user = await createUser(result);
     if (authData == null) {
@@ -109,9 +113,15 @@ class AuthClient {
 
   /// login by phone number and an SMS verification code.
   static Future<AuthResult> loginByPhoneCode(String phone, String code,
-      {AuthRequest? authData}) async {
-    var body = jsonEncode({'phone': phone, 'code': code});
-    final Result result = await post('/api/v2/login/phone-code', body);
+      {String? phoneCountryCode, AuthRequest? authData}) async {
+    Map map = {};
+    map.putIfAbsent('phone', () => phone);
+    map.putIfAbsent('code', () => code);
+    if (phoneCountryCode != null) {
+      map.putIfAbsent('phoneCountryCode', () => phoneCountryCode);
+    }
+    final Result result =
+        await post('/api/v2/login/phone-code', jsonEncode(map));
     AuthResult authResult = AuthResult(result);
     authResult.user = await createUser(result);
     if (authData == null) {
@@ -257,9 +267,16 @@ class AuthClient {
   }
 
   /// bind phone to current user.
-  static Future<AuthResult> bindPhone(String phone, String code) async {
-    var body = jsonEncode({'phone': phone, 'phoneCode': code});
-    final Result result = await post('/api/v2/users/phone/bind', body);
+  static Future<AuthResult> bindPhone(String phone, String code,
+      {String? phoneCountryCode}) async {
+    Map map = {};
+    map.putIfAbsent('phone', () => phone);
+    map.putIfAbsent('code', () => code);
+    if (phoneCountryCode != null) {
+      map.putIfAbsent('phoneCountryCode', () => phoneCountryCode);
+    }
+    final Result result =
+        await post('/api/v2/users/phone/bind', jsonEncode(map));
     AuthResult authResult = AuthResult(result);
     if (result.code == 200) {
       authResult.user = await createUser(result);

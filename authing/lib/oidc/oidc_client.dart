@@ -64,10 +64,11 @@ class OIDCClient {
 
   /// OIDC register a new user by phone number and an SMS verification code.
   static Future<AuthResult> registerByPhoneCode(
-      String phone, String code, String password) async {
+      String phone, String code, String password,
+      {String? phoneCountryCode}) async {
     AuthRequest authData = await OIDCClient.prepareLogin();
     return AuthClient.registerByPhoneCode(phone, code, password,
-        authData: authData);
+        phoneCountryCode: phoneCountryCode, authData: authData);
   }
 
   /// OIDC Login by account and password
@@ -78,9 +79,11 @@ class OIDCClient {
   }
 
   ///OIDC Login by phone code #
-  static Future<AuthResult> loginByPhoneCode(String phone, String code) async {
+  static Future<AuthResult> loginByPhoneCode(String phone, String code,
+      {String? phoneCountryCode}) async {
     AuthRequest authData = await OIDCClient.prepareLogin();
-    return AuthClient.loginByPhoneCode(phone, code, authData: authData);
+    return AuthClient.loginByPhoneCode(phone, code,
+        phoneCountryCode: phoneCountryCode, authData: authData);
   }
 
   ///Auth by code #

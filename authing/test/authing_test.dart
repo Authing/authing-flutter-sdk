@@ -16,9 +16,10 @@ void main() {
   test('register by phone code', () async {
     // change to your testing phone number. fill code after receiving the SMS
     // NOTE: add country code prefix
-    String phone = "+86xxx";
-    AuthResult result =
-        await AuthClient.registerByPhoneCode(phone, "9314", "111111");
+    String phone = "xxx";
+    AuthResult result = await AuthClient.registerByPhoneCode(
+        phone, "9314", "123456",
+        phoneCountryCode: "+86");
     expect(result.code, 200);
     expect(result.user?.phone, phone);
     expect(result.user?.token != null, true);
@@ -31,17 +32,19 @@ void main() {
   test('login by phone code', () async {
     // change to your testing phone number. fill code after receiving the SMS
     // NOTE: add country code prefix
-    String phone = "+86xxx";
-    AuthResult result = await AuthClient.loginByPhoneCode(phone, "9130");
+    String phone = "xxx";
+    AuthResult result = await AuthClient.loginByPhoneCode(phone, "5097",
+        phoneCountryCode: "+86");
     expect(result.code, 200);
     expect(result.user?.phone, phone);
 
-    AuthResult result2 = await AuthClient.loginByPhoneCode(phone, "111111");
+    AuthResult result2 = await AuthClient.loginByPhoneCode(phone, "111111",
+        phoneCountryCode: "+86");
     expect(result2.code, 2001);
   });
 
   test('send sms', () async {
-    String phone = "136";
+    String phone = "xxx";
     AuthResult result = await AuthClient.sendSms(phone, "+86");
     expect(result.code, 200);
   });
@@ -226,11 +229,12 @@ void main() {
   });
 
   test('oidcLoginByPhoneCode', () async {
-    String phone = "+86xxx";
+    String phone = "+86";
 
     await Authing.init("60caaf41da89f1954875cee1", "60caaf41df670b771fd08937");
 
-    var res = await OIDCClient.loginByPhoneCode(phone, "1234");
+    var res = await OIDCClient.loginByPhoneCode(phone, "1234",
+        phoneCountryCode: "+86");
     expect(res.code, 200);
     expect(res.user?.accessToken != null, true);
     expect(res.user?.refreshToken != null, true);
