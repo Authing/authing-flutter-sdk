@@ -52,9 +52,9 @@ class Util {
 
   static bool isIP(String? str, [/*<String | int>*/ version]) {
     RegExp _ipv4Maybe =
-    RegExp(r'^(\d?\d?\d)\.(\d?\d?\d)\.(\d?\d?\d)\.(\d?\d?\d)$');
+        RegExp(r'^(\d?\d?\d)\.(\d?\d?\d)\.(\d?\d?\d)\.(\d?\d?\d)$');
     RegExp _ipv6 =
-    RegExp(r'^::|^::1|^([a-fA-F0-9]{1,4}::?){1,7}([a-fA-F0-9]{1,4})$');
+        RegExp(r'^::|^::1|^([a-fA-F0-9]{1,4}::?){1,7}([a-fA-F0-9]{1,4})$');
 
     version = version.toString();
     if (version == 'null') {
@@ -74,7 +74,7 @@ class Util {
     if (Util.isIP(Authing.sHost)) {
       return Authing.sHost;
     } else {
-      return config.identifier + ".authing.cn";
+      return config.identifier + ".us.authing.co";
     }
   }
 }
