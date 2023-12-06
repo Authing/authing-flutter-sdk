@@ -1,44 +1,32 @@
-# Authing SDK for Flutter
+<!-- 
+This README describes the package. If you publish this package to pub.dev,
+this README's contents appear on the landing page for your package.
 
-<div align=center>
-  <img width="250" src="https://files.authing.co/authing-console/authing-logo-new-20210924.svg" />
-</div>
-<br/>
-<div align="center">
-  <a href="https://forum.authing.cn/" target="_blank"><img src="https://img.shields.io/badge/chat-forum-blue" /></a>
-  <a href="https://opensource.org/licenses/MIT" target="_blank"><img src="https://img.shields.io/badge/License-MIT-success" alt="License"></a>
-  <a href="javascript:;"><img src="https://img.shields.io/badge/PRs-welcome-green"></a>
-<br/>
-</div>
+For information about how to write a good package README, see the guide for
+[writing package pages](https://dart.dev/guides/libraries/writing-package-pages). 
 
-English | [简体中文](./README-zh_CN.md)
+For general information about developing packages, see the Dart guide for
+[creating packages](https://dart.dev/guides/libraries/create-library-packages)
+and the Flutter guide for
+[developing packages and plugins](https://flutter.dev/developing-packages). 
+-->
 
-## Introduction
+# Getting started
 
-Authing SDK for Flutter
+## Add dependency
 
-## Documentation
+in your pubspec.yaml, add the following dependency:
 
-[Click me for English documentation](https://docs.authing.cn/v2/en/reference/sdk-for-flutter/)
+```yaml
+authing_sdk_v3: ^1.0.1
+```
 
-## Questions
+## SDK initialization
 
-For questions and support please use the [official forum](https://forum.authing.cn/). The issue list of this repo is exclusively for bug reports and feature requests.
+Upon App start, call:
 
-## Contribute
+```dart
+import 'package:authing_sdk_v3/authing.dart';
 
-https://github.com/Authing/.github/blob/main/CONTRIBUTING.md
-
-## License
-
-[MIT](https://opensource.org/licenses/MIT)
-
-Copyright (c) 2019-present Authing
-
-## Get help
-
-Contact our senior Flutter developer via Wechat:
-
-<img width="120" src="./doc/images/jianan.png">
-
-
+Authing.init(String userPoolId, String appId)
+```
