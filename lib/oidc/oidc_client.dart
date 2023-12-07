@@ -30,7 +30,7 @@ class OIDCClient {
         authRequest.responseType +
         "&scope=" +
         authRequest.scope +
-        "&prompt=consent" +
+        "&prompt=login" +
         "&state=" +
         authRequest.state +
         (secret == null
@@ -49,7 +49,10 @@ class OIDCClient {
     } else {
       return 'https://' +
           Util.getHost(Authing.config) +
-          '/oidc/session/end?id_token_hint=' + (result.user?.idToken ?? '') + '&post_logout_redirect_uri=' + authRequest.redirectUrl;
+          '/oidc/session/end?id_token_hint=' +
+          (result.user?.idToken ?? '') +
+          '&post_logout_redirect_uri=' +
+          authRequest.redirectUrl;
     }
   }
 
