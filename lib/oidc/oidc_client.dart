@@ -30,7 +30,7 @@ class OIDCClient {
         authRequest.responseType +
         "&scope=" +
         authRequest.scope +
-        "&prompt=login" +
+        "&prompt=consent" +
         "&state=" +
         authRequest.state +
         (secret == null
